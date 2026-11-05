@@ -1,102 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Neon Drift — Dodge &amp; Collect</title>
+<title>All-in-One Box — Sandbox de Biología y Evolución</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-    background: #05070a; color: #fff; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #060b10; color: #e8f4ea; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     touch-action: none; }
   #wrap { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  canvas { display: block; max-width: 100%; max-height: 100%; background: #030508;
-    box-shadow: 0 0 40px rgba(0,255,255,0.06); border-radius: 8px; }
+  canvas { display: block; max-width: 100%; max-height: 100%; background: #04080b;
+    box-shadow: 0 0 50px rgba(46, 204, 113, 0.10); border-radius: 10px; }
   .layer { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    pointer-events: none; z-index: 10; }
-  .layer > * { pointer-events: auto; }
-  h1 { margin: 0 0 10px; font-size: clamp(28px, 8vw, 56px); letter-spacing: 14px; text-transform: uppercase;
-    color: #00ffff; text-shadow: 0 0 20px rgba(0,255,255,0.6), 0 0 60px rgba(0,255,255,0.25); }
-  p { margin: 0 0 22px; font-size: clamp(14px, 4vw, 20px); color: #cfd8e6; opacity: 0.9; text-align: center; }
-  .btn { pointer-events: auto; display: inline-block; padding: 12px 30px; font-size: clamp(16px, 4vw, 20px);
-    font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #000; background: #00ffff;
-    border: none; border-radius: 6px; cursor: pointer; box-shadow: 0 0 20px rgba(0,255,255,0.5);
-    text-decoration: none; transition: transform .1s, filter .1s; }
-  .btn:active { transform: scale(0.96); filter: brightness(1.2); }
-  .hint { margin-top: 14px; font-size: clamp(12px, 3vw, 15px); color: #8fb0c6; opacity: 0.85; pointer-events: none; }
-  .hud { position: absolute; top: 14px; left: 0; right: 0; display: flex; justify-content: space-between;
-    padding: 0 clamp(16px, 4vw, 32px); pointer-events: none; z-index: 12; font-variant-numeric: tabular-nums; }
-  .hud .stat { font-size: clamp(16px, 4vw, 22px); font-weight: 800; color: #e8f1ff; letter-spacing: 2px;
-    text-shadow: 0 0 12px rgba(0,255,255,0.35); }
-  .hud .stat b { color: #00ffff; margin-right: 6px; }
-  .controls { position: absolute; bottom: 22px; left: 0; right: 0; display: flex; justify-content: center; gap: 14px;
     pointer-events: none; z-index: 12; }
-  .dpad { pointer-events: auto; display: grid; grid-template-columns: repeat(3, 56px); grid-template-rows: repeat(2, 56px);
-    gap: 8px; background: rgba(255,255,255,0.06); padding: 8px; border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(4px); }
-  .dpad .btn { grid-column: 2; grid-row: 2; width: 56px; height: 56px; padding: 0; font-size: 24px; line-height: 56px;
-    border-radius: 10px; box-shadow: 0 4px 0 rgba(0,0,0,0.35); }
-  .dpad .btn:active { box-shadow: 0 0 0 rgba(0,0,0,0.35); transform: translateY(4px); }
-  .dpad .l { grid-column: 1; grid-row: 2; } .dpad .r { grid-column: 3; grid-row: 2; }
-  .dpad .u { grid-column: 2; grid-row: 1; } .dpad .d { grid-column: 2; grid-row: 3; }
+  .layer > * { pointer-events: auto; }
+  h1 { margin: 0 0 10px; font-size: clamp(26px, 7vw, 48px); letter-spacing: 10px; text-transform: uppercase;
+    color: #2ecc71; text-shadow: 0 0 25px rgba(46,204,113,0.5), 0 0 70px rgba(46,204,113,0.2); }
+  p { margin: 0 0 20px; font-size: clamp(13px, 3.5vw, 17px); color: #bfe3cd; opacity: 0.9; text-align: center; line-height: 1.5; }
+  .btn { display: inline-block; padding: 11px 26px; font-size: clamp(14px, 3.5vw, 17px); font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase; color: #060b10; background: #2ecc71; border: none;
+    border-radius: 6px; cursor: pointer; box-shadow: 0 0 25px rgba(46,204,113,0.55); text-decoration: none;
+    transition: transform .1s, filter .1s; }
+  .btn:active { transform: scale(0.96); filter: brightness(1.15); }
+  .btn.secondary { background: rgba(255,255,255,0.10); color: #e8f4ea; box-shadow: none; border: 1px solid rgba(255,255,255,0.15); }
+  .hint { margin-top: 12px; font-size: clamp(12px, 3vw, 14px); color: #8fc1a3; opacity: 0.85; pointer-events: none; }
   .hide { display: none !important; }
-  .overlay-bg { position: absolute; inset: 0; background: rgba(3,5,8,0.75); backdrop-filter: blur(6px); z-index: 9; pointer-events: none; }
-  @media (min-width: 768px) { .controls { display: none !important; } }
+  .overlay-bg { position: absolute; inset: 0; background: rgba(6,11,16,0.8); backdrop-filter: blur(6px); z-index: 11; pointer-events: none; }
+
+  /* HUD */
+  .hud { position: absolute; top: 12px; left: 0; right: 0; display: flex; gap: 10px; justify-content: center;
+    padding: 0 16px; pointer-events: none; z-index: 14; flex-wrap: wrap; }
+  .stat { display: flex; align-items: baseline; gap: 6px; font-size: clamp(13px, 3.5vw, 16px); font-weight: 800;
+    color: #d7efe2; background: rgba(255,255,255,0.06); padding: 6px 11px; border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(4px); letter-spacing: 0.4px; }
+  .stat .val { color: #2ecc71; font-variant-numeric: tabular-nums; margin-left: 2px; }
+  .stat .lbl { font-size: 0.78em; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.8px; }
+
+  /* Panel de controles */
+  .panel { position: absolute; bottom: 16px; left: 0; right: 0; display: flex; justify-content: center; gap: 10px;
+    padding: 0 16px; pointer-events: none; z-index: 14; flex-wrap: wrap; }
+  .panel > * { pointer-events: auto; }
+  .row { display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 7px 11px;
+    border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(4px); }
+  .row label { font-size: 11px; color: #a8d5bd; text-transform: uppercase; letter-spacing: 0.8px; opacity: 0.9; }
+  .row input[type=range] { width: 110px; accent-color: #2ecc71; cursor: pointer; }
+  .row .btn { padding: 6px 14px; font-size: 13px; }
+  .chip { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px;
+    background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.35); }
+  .chip.warn { background: rgba(241, 196, 15, 0.15); color: #f1c40f; border-color: rgba(241,196,15,0.35); }
+  .chip.off { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border-color: rgba(231,76,60,0.35); }
+
+  .controls-tip { position: absolute; bottom: 74px; left: 0; right: 0; text-align: center; pointer-events: none;
+    font-size: clamp(12px, 3vw, 14px); color: #8fc1a3; opacity: 0.8; z-index: 13; }
+  @media (min-width: 768px) { .controls-tip { display: none; } }
 </style>
 </head>
 <body>
 <div id="wrap">
-  <canvas id="game" width="360" height="640"></canvas>
+  <canvas id="game" width="720" height="1280"></canvas>
 
-  <div class="hud">
-    <div class="stat">SCORE <b id="score">0</b></div>
-    <div class="stat">BEST <b id="best">0</b></div>
-    <div class="stat">LIVES <b id="lives">3</b></div>
-  </div>
+  <div class="hud" id="hud"></div>
 
-  <div class="controls">
-    <div class="dpad">
-      <div class="btn u" data-dir="up">&#9650;</div>
-      <div class="btn l" data-dir="left">&#9664;</div>
-      <div class="btn d" data-dir="down">&#9660;</div>
-      <div class="btn r" data-dir="right">&#9654;</div>
-    </div>
-  </div>
+  <div class="panel" id="panel"></div>
+
+  <div class="controls-tip" id="tip">Arrastra para crear comida • Toca el fondo para crear una célula</div>
 
   <div class="layer" id="menu">
     <div class="overlay-bg"></div>
-    <div>
-      <h1>Neon Drift</h1>
-      <p>Avoid the red cores. Collect the yellow shards.</p>
-      <a class="btn" id="startBtn">Start Game</a>
-      <div class="hint">Arrows / WASD to move &nbsp;•&nbsp; Tap or click to begin</div>
+    <div style="text-align:center">
+      <h1>All-in-One Box</h1>
+      <p>Sandbox 2D de biología, evolución y ciencia. Observa cómo surgen especies, mutan y se adaptan. Modo relajante incluido.</p>
+      <a class="btn" id="startBtn">Empezar sandbox</a>
+      <a class="btn secondary" id="relaxBtn">Modo relajante</a>
+      <div class="hint">Toca la pantalla para interactuar • Arrastra para crear nutrientes</div>
     </div>
   </div>
 
-  <div class="layer hide" id="gameover">
+  <div class="layer hide" id="overlay">
     <div class="overlay-bg"></div>
-    <div style="text-align:center">
-      <h1 style="color:#ff3b3b">Game Over</h1>
-      <p id="finalScore">Score: 0</p>
-      <p id="bestScore" style="margin-bottom:16px;color:#00ffff">Best: 0</p>
-      <a class="btn" id="restartBtn">Play Again</a>
-      <div class="hint">Press Space to restart</div>
+    <div style="text-align:center; max-width: 320px">
+      <h2 id="ovTitle" style="color:#2ecc71; margin-bottom:8px">Sandbox</h2>
+      <p id="ovDesc" style="margin-bottom:16px; font-size:14px"></p>
+      <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+        <a class="btn" id="ovResume">Continuar</a>
+        <a class="btn secondary" id="ovReset">Reiniciar mundo</a>
+      </div>
+      <div class="hint" style="margin-top:10px">Esc también pausa</div>
     </div>
   </div>
 </div>
 <script>
 (function () {
-  const canvas = document.getElementById('game');
-  const ctx = canvas.getContext('2d', { alpha: false });
-  const elScore = document.getElementById('score');
-  const elBest = document.getElementById('best');
-  const elLives = document.getElementById('lives');
-  const elMenu = document.getElementById('menu');
-  const elGameOver = document.getElementById('gameover');
-  const elFinal = document.getElementById('finalScore');
-  const elBestGo = document.getElementById('bestScore');
-
-  // ---------- Audio (Web Audio, user-gesture gated) ----------
+  // ================= Audio (Web Audio, gesto de usuario) =================
   let audioCtx;
   function ensureAudio() {
     if (!audioCtx) {
@@ -104,7 +100,7 @@
     }
     if (audioCtx.state === 'suspended') audioCtx.resume();
   }
-  function tone(freq, type, duration, vol = 0.06, when = 0) {
+  function tone(freq, type, duration, vol = 0.05, when = 0) {
     if (!audioCtx) return;
     const t = audioCtx.currentTime + when;
     const o = audioCtx.createOscillator();
@@ -117,316 +113,514 @@
     o.start(t); o.stop(t + duration);
   }
   const sfx = {
-    collect: () => tone(900, 'square', 0.08, 0.05),
-    hit: () => { tone(120, 'sawtooth', 0.25, 0.07); tone(90, 'sawtooth', 0.25, 0.06, 0.08); },
-    gameover: () => { tone(220, 'sawtooth', 0.3, 0.08); tone(150, 'sawtooth', 0.4, 0.08, 0.12); tone(110, 'sawtooth', 0.6, 0.09, 0.28); },
-    start: () => tone(600, 'square', 0.1, 0.04),
+    birth:   () => tone(700, 'sine', 0.12, 0.04),
+    eat:     () => tone(1100, 'sine', 0.06, 0.03),
+    divide:  () => { tone(900, 'sine', 0.1, 0.04); tone(1200, 'sine', 0.1, 0.04, 0.06); },
+    mutate:  () => tone(1500, 'square', 0.1, 0.04),
+    die:     () => tone(260, 'sawtooth', 0.15, 0.04),
+    click:   () => tone(1700, 'sine', 0.05, 0.02),
+  };
+  // bucle ambiental relajante (solo si el modo relajante está activo)
+  let ambient = null;
+  function startAmbient() {
+    if (!audioCtx) return;
+    if (ambient) return;
+    const master = audioCtx.createGain(); master.gain.value = 0.03; master.connect(audioCtx.destination);
+    const osc1 = audioCtx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = 110;
+    const osc2 = audioCtx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 147;
+    const lfo = audioCtx.createOscillator(); lfo.frequency.value = 0.05;
+    const lfoG = audioCtx.createGain(); lfoG.gain.value = 6;
+    lfo.connect(lfoG); lfoG.connect(osc1.detune); lfoG.connect(osc2.detune);
+    osc1.connect(master); osc2.connect(master);
+    osc1.start(); osc2.start(); lfo.start();
+    ambient = { master, osc1, osc2, lfo };
+  }
+  function stopAmbient() {
+    if (ambient) { try { ambient.osc1.stop(); ambient.osc2.stop(); ambient.lfo.stop(); } catch(e) {}
+      ambient = null; }
+  }
+
+  // ================= Config / estado =================
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d', { alpha: false });
+  const W = canvas.width, H = canvas.height;
+  const elHud = document.getElementById('hud');
+  const elPanel = document.getElementById('panel');
+  const elTip = document.getElementById('tip');
+  const elMenu = document.getElementById('menu');
+  const elOverlay = document.getElementById('overlay');
+  const elOvTitle = document.getElementById('ovTitle');
+  const elOvDesc = document.getElementById('ovDesc');
+
+  // Ajustes del sandbox (ajustables por el usuario)
+  const CFG = {
+    foodSpawn: 0.12,        // probabilidad de comida por frame base
+    maxFood: 220,
+    maxCreatures: 220,
+    baseEnergy: 60,
+    mutateChance: 0.08,
+    mutateAmount: 0.14,
+    divideEnergy: 110,
+    relax: false,
+    speed: 1.0,
   };
 
-  // ---------- Game constants ----------
-  const W = canvas.width, H = canvas.height;
-  const PLAYER_R = 12;
-  const PLAYER_SPEED = 6.2;
-  const FRICTION = 0.88;
-  const INVINCIBLE = 1500; // ms
-  const SPAWN_BASE = 700;   // ms between enemy spawns
-  const STAR_CHANCE = 0.045;
+  let state = 'MENU'; // MENU | PLAYING | PAUSED
+  let paused = false;
+  let frame = 0;
+  let lastTime = 0;
 
-  // ---------- State ----------
-  let state = 'MENU'; // MENU | PLAYING | GAMEOVER
-  let score = 0, best = 0, lives = 3;
-  let lastTime = 0, spawnTimer = 0, difficulty = 1;
-  let particles = [], enemies = [], stars = [];
-  let player = { x: W * 0.5, y: H - 70, vx: 0, vy: 0, angle: 0, invincible: 0 };
-  let keys = {};
+  let foods = [];     // {x,y,r,energy,type}
+  let creatures = []; // criaturas
+  let particles = []; // {x,y,vx,vy,life,color,size}
 
-  best = Number(localStorage.getItem('neondrift_best') || 0);
-  elBest.textContent = best;
+  // estadísticas educativas
+  let stats = {
+    born: 0, dead: 0, eaten: 0, divisions: 0, mutations: 0,
+    generations: 0, avgSpeed: 0, avgSize: 0, avgSense: 0,
+    species: 0,
+  };
 
-  // ---------- Input ----------
-  function setKey(k, v) { keys[k] = v; }
+  // paleta de especies (colores por id de especie)
+  const speciesColors = {};
+
+  // ================= Utilidades =================
+  function rand(min, max) { return Math.random() * (max - min) + min; }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function dist2(a, b) { const dx = a.x - b.x, dy = a.y - b.y; return dx*dx + dy*dy; }
+
+  function getSpeciesColor(id) {
+    if (speciesColors[id]) return speciesColors[id];
+    const h = (id * 137.508) % 360; // ángulo áureo -> colores distribuidos
+    speciesColors[id] = `hsl(${h}, 70%, 62%)`;
+    return speciesColors[id];
+  }
+
+  // ================= Entidades =================
+  function spawnFood(x, y, forced) {
+    if (foods.length >= CFG.maxFood && !forced) return;
+    const r = 3 + Math.random() * 4;
+    const energy = 8 + Math.random() * 12;
+    const type = Math.random() < 0.12 ? 'sun' : 'food'; // 'sun' = fotosíntesis (verde brillante)
+    foods.push({ x, y, r, energy, type, age: 0 });
+  }
+
+  function spawnCreature(x, y, dna, fromDivision) {
+    if (creatures.length >= CFG.maxCreatures) return null;
+    const d = dna || randomDna();
+    // herencia con mutación
+    if (dna && Math.random() < CFG.mutateChance) {
+      mutateDna(d);
+      stats.mutations++;
+      sfx.mutate();
+    }
+    const c = {
+      x, y,
+      vx: (Math.random() - 0.5) * 2,
+      vy: (Math.random() - 0.5) * 2,
+      r: 6 + d.size * 10,
+      energy: CFG.baseEnergy,
+      age: 0,
+      dna,
+      speciesId: dna.speciesId,
+      color: getSpeciesColor(dna.speciesId),
+      dir: Math.random() * Math.PI * 2,
+      turnSpeed: 0.03 + d.sense * 0.04,
+      lastDivide: 0,
+      generation: dna.generation || 1,
+      justBorn: 20, // frames de invulnerabilidad visual
+    };
+    creatures.push(c);
+    stats.born++;
+    if (fromDivision) stats.divisions++;
+    sfx.birth();
+    return c;
+  }
+
+  function randomDna() {
+    // ADN: velocidad, tamaño, sentido, eficiencia energética, tipo de dieta, color-hue offset, generación
+    return {
+      speed: rand(0.8, 2.2),
+      size: rand(0.5, 1.4),
+      sense: rand(0.6, 1.6),      // radio de detección de comida
+      eff: rand(0.7, 1.3),        // eficiencia al convertir comida en energía
+      diet: Math.random() < 0.25 ? 'sun' : 'food', // 'sun' prefiere fotosíntesis, 'food' come materia orgánica
+      speciesId: Math.floor(rand(1, 1e6)),
+      generation: 1,
+    };
+  }
+
+  function mutateDna(d) {
+    const keys = ['speed','size','sense','eff'];
+    const k = keys[Math.floor(Math.random() * keys.length)];
+    d[k] *= (1 + rand(-CFG.mutateAmount, CFG.mutateAmount));
+    d[k] = clamp(d[k], 0.25, 2.5);
+    if (Math.random() < 0.3) d.diet = d.diet === 'food' ? 'sun' : 'food';
+    d.speciesId = Math.floor(rand(1, 1e6)); // nueva especie tras mutación fuerte
+    d.generation = (d.generation || 1) + 1;
+  }
+
+  // ================= Física / interacción =================
+  let pointer = { x: -1e4, y: -1e4, down: false };
+  canvas.addEventListener('pointerdown', e => {
+    ensureAudio();
+    if (state !== 'PLAYING') { if (state === 'MENU') { sfx.click(); startSandbox(); } return; }
+    pointer.down = true;
+    const r = canvas.getBoundingClientRect();
+    const sx = W / r.width, sy = H / r.height;
+    pointer.x = (e.clientX - r.left) * sx;
+    pointer.y = (e.clientY - r.top) * sy;
+    // crear comida bajo el dedo (arrastre continuo se maneja en pointermove)
+    spawnFood(pointer.x, pointer.y, true);
+    sfx.click();
+  }, { passive: false });
+  canvas.addEventListener('pointermove', e => {
+    const r = canvas.getBoundingClientRect();
+    const sx = W / r.width, sy = H / r.height;
+    pointer.x = (e.clientX - r.left) * sx;
+    pointer.y = (e.clientY - r.top) * sy;
+    if (state === 'PLAYING' && pointer.down) {
+      // dejar estela de comida al arrastrar
+      if (frame % 3 === 0) spawnFood(pointer.x, pointer.y, true);
+    }
+  }, { passive: false });
+  canvas.addEventListener('pointerup', () => pointer.down = false);
+  canvas.addEventListener('pointerleave', () => pointer.down = false);
+
+  // clic en fondo vacío crea célula (usando pointerdown ya lo hace si no hay comida; añadimos doble-intención)
+  // teclado
   window.addEventListener('keydown', e => {
     const k = e.key.toLowerCase();
-    if (['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d',' '].includes(k)) e.preventDefault();
-    setKey(k, true);
-    if (state === 'MENU' && k === ' ') { ensureAudio(); startGame(); sfx.start(); }
-    if (state === 'GAMEOVER' && k === ' ') { ensureAudio(); startGame(); sfx.start(); }
-  }, { passive: false });
-  window.addEventListener('keyup', e => setKey(e.key.toLowerCase(), false));
-
-  // Touch D-pad
-  const dpadBtns = document.querySelectorAll('.controls .btn');
-  function touchBtn(dir, pressed) {
-    if (state !== 'PLAYING') return;
-    keys['touch_' + dir] = pressed;
-  }
-  dpadBtns.forEach(btn => {
-    const dir = btn.dataset.dir;
-    const press = () => touchBtn(dir, true);
-    const release = () => touchBtn(dir, false);
-    btn.addEventListener('mousedown', press);
-    btn.addEventListener('touchstart', e => { e.preventDefault(); press(); }, { passive: false });
-    btn.addEventListener('mouseup', release);
-    btn.addEventListener('mouseleave', release);
-    btn.addEventListener('touchend', e => { e.preventDefault(); release(); }, { passive: false });
-    btn.addEventListener('touchcancel', release);
+    if (k === ' ') { e.preventDefault(); ensureAudio(); togglePause(); sfx.click(); }
+    if (k === 'r') { ensureAudio(); resetWorld(); sfx.click(); }
+    if (k === '1') { ensureAudio(); for (let i = 0; i < 8; i++) spawnFood(rand(0, W), rand(0, H), true); }
+    if (k === '2') { ensureAudio(); spawnCreature(rand(40, W-40), rand(40, H-40), randomDna(), false); }
+    if (k === 'm') { ensureAudio(); CFG.relax = !CFG.relax; if (CFG.relax) startAmbient(); else stopAmbient(); sfx.click(); }
   });
-  // Direct drag-to-move on canvas (mobile friendly)
-  canvas.addEventListener('touchstart', e => { e.preventDefault(); ensureAudio(); if (state === 'MENU') startGame(); });
-  canvas.addEventListener('touchmove', e => {
-    if (state !== 'PLAYING') { e.preventDefault(); return; }
-    e.preventDefault();
-    const t = e.touches[0], rect = canvas.getBoundingClientRect();
-    const sx = canvas.width / rect.width, sy = canvas.height / rect.height;
-    player.x = (t.clientX - rect.left) * sx;
-    player.y = (t.clientY - rect.top) * sy;
-  }, { passive: false });
 
-  document.getElementById('startBtn').addEventListener('click', e => { e.preventDefault(); ensureAudio(); startGame(); sfx.start(); });
-  document.getElementById('restartBtn').addEventListener('click', e => { e.preventDefault(); ensureAudio(); startGame(); sfx.start(); });
-
-  // ---------- Entities ----------
-  function spawnEnemy() {
-    const size = 14 + Math.random() * 14;
-    enemies.push({
-      x: size + Math.random() * (W - size * 2),
-      y: -size - 10,
-      vx: (Math.random() - 0.5) * 1.6,
-      vy: 2.6 + Math.random() * 2.2 + difficulty,
-      size,
-      angle: Math.random() * Math.PI * 2,
-      rotSpeed: (Math.random() - 0.5) * 0.15
-    });
-  }
-  function spawnStar() {
-    if (Math.random() > STAR_CHANCE) return;
-    const r = 6 + Math.random() * 4;
-    stars.push({
-      x: r + Math.random() * (W - r * 2),
-      y: -r - 10,
-      vy: 2.0 + Math.random() * 1.6 + difficulty * 0.5,
-      r,
-      phase: Math.random() * Math.PI * 2
-    });
-  }
-  function explode(x, y, color, count) {
-    for (let i = 0; i < count; i++) {
-      particles.push({
-        x, y,
-        vx: (Math.random() - 0.5) * 7,
-        vy: (Math.random() - 0.5) * 7,
-        life: 0.4 + Math.random() * 0.5,
-        maxLife: 1,
-        color,
-        size: 2 + Math.random() * 3
-      });
-    }
-  }
-
-  // ---------- Core ----------
-  function resetPlayer() {
-    player.x = W * 0.5;
-    player.y = H - 70;
-    player.vx = 0; player.vy = 0;
-    player.invincible = INVINCIBLE;
-  }
-  function startGame() {
-    state = 'PLAYING';
-    score = 0; lives = 3; difficulty = 1;
-    spawnTimer = 0; lastTime = performance.now();
-    particles = []; enemies = []; stars = [];
-    elScore.textContent = '0';
-    elLives.textContent = '3';
+  function togglePause() { paused = !paused; }
+  function startSandbox() {
+    state = 'PLAYING'; paused = false; frame = 0; lastTime = performance.now();
+    foods = []; creatures = []; particles = [];
+    stats = { born:0, dead:0, eaten:0, divisions:0, mutations:0, generations:0, avgSpeed:0, avgSize:0, avgSense:0, species:0 };
+    speciesColors = {};
+    for (let i = 0; i < 6; i++) spawnCreature(rand(60, W-60), rand(60, H-60), randomDna(), false);
+    for (let i = 0; i < 40; i++) spawnFood(rand(0, W), rand(0, H), true);
     elMenu.classList.add('hide');
-    elGameOver.classList.add('hide');
-    resetPlayer();
+    elOverlay.classList.add('hide');
+    if (CFG.relax) { ensureAudio(); startAmbient(); }
     requestAnimationFrame(loop);
   }
-  function gameOver() {
-    state = 'GAMEOVER';
-    cancelAnimationFrame(loop.id);
-    if (score > best) { best = score; localStorage.setItem('neondrift_best', String(best)); elBest.textContent = best; }
-    elFinal.textContent = 'Score: ' + score;
-    elBestGo.textContent = 'Best: ' + best;
-    elGameOver.classList.remove('hide');
-    sfx.gameover();
-  }
-  function hurt() {
-    if (player.invincible > 0) return;
-    lives--;
-    elLives.textContent = lives;
-    explode(player.x, player.y, '#ff3b3b', 14);
-    sfx.hit();
-    if (lives <= 0) { gameOver(); } else { resetPlayer(); }
+  function resetWorld() {
+    foods = []; creatures = []; particles = [];
+    stats = { born:0, dead:0, eaten:0, divisions:0, mutations:0, generations:0, avgSpeed:0, avgSize:0, avgSense:0, species:0 };
+    speciesColors = {};
+    for (let i = 0; i < 6; i++) spawnCreature(rand(60, W-60), rand(60, H-60), randomDna(), false);
+    for (let i = 0; i < 40; i++) spawnFood(rand(0, W), rand(0, H), true);
+    paused = false;
+    elOverlay.classList.add('hide');
   }
 
-  // ---------- Update / Draw ----------
-  function rectIntersect(cx, cy, r, rx, ry, rw, rh) {
-    const dx = Math.max(rx, Math.min(cx, rx + rw)) - cx;
-    const dy = Math.max(ry, Math.min(cy, ry + rh)) - cy;
-    return dx * dx + dy * dy < r * r;
-  }
-
-  function drawStarShape(x, y, r) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.beginPath();
-    for (let i = 0; i < 5; i++) {
-      const aOuter = (i * 2 * Math.PI / 5) - Math.PI / 2;
-      const aInner = aOuter + Math.PI / 5;
-      const ro = r, ri = r * 0.45;
-      ctx.lineTo(Math.cos(aOuter) * ro, Math.sin(aOuter) * ro);
-      ctx.lineTo(Math.cos(aInner) * ri, Math.sin(aInner) * ri);
+  // ================= Partículas =================
+  function explode(x, y, color, count, speed = 2.5) {
+    for (let i = 0; i < count; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const s = Math.random() * speed;
+      particles.push({ x, y, vx: Math.cos(a)*s, vy: Math.sin(a)*s,
+        life: 0.35 + Math.random()*0.4, color, size: 1.5 + Math.random()*2.5 });
     }
-    ctx.closePath();
-    ctx.fillStyle = '#ffd93d';
-    ctx.shadowColor = '#ffd93d'; ctx.shadowBlur = 14;
-    ctx.fill();
-    ctx.restore();
   }
 
-  function loop(now) {
-    loop.id = requestAnimationFrame(loop);
-    const dt = Math.min((now - lastTime) / 16.67, 3);
-    lastTime = now;
+  // ================= Lógica principal =================
+  function update() {
+    if (paused) return;
 
-    // Movement input
-    let ax = 0, ay = 0;
-    if (keys['arrowleft'] || keys['a'] || keys['touch_left']) ax = -1;
-    if (keys['arrowright'] || keys['d'] || keys['touch_right']) ax = 1;
-    if (keys['arrowup'] || keys['w'] || keys['touch_up']) ay = -1;
-    if (keys['arrowdown'] || keys['s'] || keys['touch_down']) ay = 1;
-    const len = Math.hypot(ax, ay);
-    if (len > 0) { ax /= len; ay /= len; }
-    player.vx += ax * PLAYER_SPEED;
-    player.vy += ay * PLAYER_SPEED;
-    player.vx *= FRICTION; player.vy *= FRICTION;
-    player.x += player.vx; player.y += player.vy;
-    player.x = Math.max(PLAYER_R, Math.min(W - PLAYER_R, player.x));
-    player.y = Math.max(PLAYER_R, Math.min(H - PLAYER_R, player.y));
-    if (player.invincible > 0) player.invincible -= 16.67 * dt;
-    player.angle += 0.12 * dt;
+    // spawn pasivo de comida (nutrientes del entorno)
+    if (CFG.foodSpawn > 0 && foods.length < CFG.maxFood && Math.random() < CFG.foodSpawn * CFG.speed) {
+      spawnFood(rand(0, W), rand(0, H), false);
+    }
+    // 'sun' aparece ocasionalmente (fuente de energía fotosintética)
+    if (foods.length < CFG.maxFood && Math.random() < 0.006 * CFG.speed) {
+      spawnFood(rand(0, W), rand(0, H), true);
+      foods[foods.length-1].type = 'sun';
+      foods[foods.length-1].r = 6;
+      foods[foods.length-1].energy = 20;
+    }
 
-    // Spawn timing
-    spawnTimer -= 16.67 * dt;
-    const spawnRate = Math.max(260, SPAWN_BASE - difficulty * 140);
-    if (spawnTimer <= 0) { spawnEnemy(); spawnTimer = spawnRate; }
-    if (Math.random() * dt < 0.06) spawnStar();
+    // --- Comida envejece y desaparece ---
+    for (let i = foods.length - 1; i >= 0; i--) {
+      const f = foods[i];
+      f.age++;
+      if (f.age > 1400) { foods.splice(i, 1); continue; }
+    }
 
-    // Update enemies
-    for (let i = enemies.length - 1; i >= 0; i--) {
-      const e = enemies[i];
-      e.x += e.vx; e.y += e.vy;
-      e.angle += e.rotSpeed * dt;
-      if (e.vx !== 0) { e.x += e.vx; if (e.x < -e.size || e.x > W + e.size) enemies.splice(i, 1); continue; }
-      if (e.y > H + e.size) { enemies.splice(i, 1); score += 1; elScore.textContent = score; continue; }
-      // collision with player
-      if (player.invincible <= 0) {
-        const dx = e.x - player.x, dy = e.y - player.y;
-        const min = e.size * 0.55 + PLAYER_R * 0.75;
-        if (dx * dx + dy * dy < min * min) hurt();
+    // --- Criaturas ---
+    let sumSpeed = 0, sumSize = 0, sumSense = 0;
+    const speciesSet = new Set();
+
+    for (let i = creatures.length - 1; i >= 0; i--) {
+      const c = creatures[i];
+      c.age++;
+      c.lastDivide++;
+      c.justBorn = Math.max(0, c.justBorn - 1);
+      speciesSet.add(c.speciesId);
+
+      // gasto de energía por existir (metabolismo)
+      const metabolism = 0.06 + c.dna.speed * 0.05 + c.dna.size * 0.04;
+      c.energy -= metabolism * CFG.speed;
+
+      // movimiento: dirección aleatoria suave + giro hacia comida cercana
+      const target = findNearestFood(c);
+      if (target) {
+        const dx = target.x - c.x, dy = target.y - c.y;
+        const ang = Math.atan2(dy, dx);
+        let diff = ang - c.dir;
+        while (diff > Math.PI) diff -= Math.PI*2;
+        while (diff < -Math.PI) diff += Math.PI*2;
+        c.dir += diff * (c.dna.sense * 0.05) * CFG.speed;
+      } else {
+        c.dir += (Math.random() - 0.5) * c.turnSpeed * CFG.speed;
       }
-    }
+      const spd = c.dna.speed * 1.4 * CFG.speed;
+      c.vx = Math.cos(c.dir) * spd;
+      c.vy = Math.sin(c.dir) * spd;
+      c.x += c.vx; c.y += c.vy;
 
-    // Update stars
-    for (let i = stars.length - 1; i >= 0; i--) {
-      const s = stars[i];
-      s.y += s.vy * dt;
-      s.phase += 0.12 * dt;
-      if (s.y > H + s.r) { stars.splice(i, 1); continue; }
-      const dx = s.x - player.x, dy = s.y - player.y;
-      if (dx * dx + dy * dy < (s.r + PLAYER_R) * (s.r + PLAYER_R)) {
-        stars.splice(i, 1);
-        score += 15;
-        elScore.textContent = score;
-        explode(s.x, s.y, '#ffd93d', 9);
-        sfx.collect();
-        difficulty += 0.02;
+      // rebote en bordes
+      if (c.x < c.r) { c.x = c.r; c.dir = Math.PI - c.dir; }
+      if (c.x > W - c.r) { c.x = W - c.r; c.dir = Math.PI - c.dir; }
+      if (c.y < c.r) { c.y = c.r; c.dir = -c.dir; }
+      if (c.y > H - c.r) { c.y = H - c.r; c.dir = -c.dir; }
+
+      // comer comida cercana
+      for (let j = foods.length - 1; j >= 0; j--) {
+        const f = foods[j];
+        const dd = dist2(c, f);
+        const min = (c.r + f.r) * (c.r + f.r);
+        if (dd < min) {
+          // dieta: 'sun' solo gana energía completa de 'sun', 'food' prefiere 'food' pero come ambas
+          let gain = f.energy * c.dna.eff;
+          if (c.dna.diet === 'sun' && f.type !== 'sun') gain *= 0.45;
+          if (c.dna.diet === 'food' && f.type === 'sun') gain *= 0.7;
+          c.energy += gain;
+          stats.eaten++;
+          sfx.eat();
+          explode(f.x, f.y, c.dna.diet === 'sun' ? '#a8e6cf' : '#ffd97b', 4, 1.5);
+          foods.splice(j, 1);
+          break;
+        }
       }
+
+      // división / reproducción asexuada
+      if (c.energy >= CFG.divideEnergy && c.lastDivide > 180 && creatures.length < CFG.maxCreatures) {
+        c.energy /= 2;
+        c.lastDivide = 0;
+        const child = spawnCreature(c.x + rand(-c.r, c.r), c.y + rand(-c.r, c.r), { ...c.dna, generation: c.dna.generation + 1 }, true);
+        stats.generations = Math.max(stats.generations, child.generation);
+      }
+
+      // muerte por energía
+      if (c.energy <= 0) {
+        explode(c.x, c.y, c.color, 8, 2.5);
+        sfx.die();
+        creatures.splice(i, 1);
+        stats.dead++;
+        continue;
+      }
+
+      sumSpeed += c.dna.speed;
+      sumSize += c.dna.size;
+      sumSense += c.dna.sense;
     }
 
-    // Difficulty ramp over time
-    difficulty += 0.0003 * dt;
+    // agregados de estadísticas
+    const n = creatures.length;
+    stats.avgSpeed = n ? sumSpeed / n : 0;
+    stats.avgSize = n ? sumSize / n : 0;
+    stats.avgSense = n ? sumSense / n : 0;
+    stats.species = speciesSet.size;
 
-    // Particles
+    // --- Partículas ---
     for (let i = particles.length - 1; i >= 0; i--) {
       const p = particles[i];
       p.x += p.vx; p.y += p.vy;
-      p.life -= 0.018 * dt;
-      if (p.life <= 0) { particles.splice(i, 1); continue; }
+      p.life -= 0.025 * CFG.speed;
+      if (p.life <= 0) particles.splice(i, 1);
     }
 
-    // ---------- Draw ----------
-    ctx.clearRect(0, 0, W, H);
-    // subtle grid / starfield background
-    ctx.strokeStyle = 'rgba(0,255,255,0.04)';
-    ctx.lineWidth = 1;
-    const grid = 40;
-    const off = (now * 0.15) % grid;
-    for (let g = off - grid; g < H; g += grid) { ctx.beginPath(); ctx.moveTo(0, g); ctx.lineTo(W, g); ctx.stroke(); }
-    for (let g = off - grid; g < W; g += grid) { ctx.beginPath(); ctx.moveTo(g, 0); ctx.lineTo(g, H); ctx.stroke(); }
+    frame++;
+  }
 
-    // Enemies
-    enemies.forEach(e => {
+  function findNearestFood(c) {
+    let best = null, bestD = Infinity;
+    const sense = 90 + c.dna.sense * 70;
+    const sense2 = sense * sense;
+    for (const f of foods) {
+      // preferencia por dieta
+      let pref = 1;
+      if (c.dna.diet === 'sun' && f.type !== 'sun') pref = 0.5;
+      if (c.dna.diet === 'food' && f.type === 'sun') pref = 0.8;
+      const dd = dist2(c, f) * pref;
+      if (dd < sense2 && dd < bestD) { bestD = dd; best = f; }
+    }
+    return best;
+  }
+
+  // ================= Dibujo =================
+  function draw() {
+    // fondo tipo agua / placa de Petri con degradado sutil
+    const grad = ctx.createRadialGradient(W*0.5, H*0.3, 0, W*0.5, H*0.5, Math.max(W,H)*0.9);
+    grad.addColorStop(0, '#0a161b');
+    grad.addColorStop(1, '#04080a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+
+    // rejilla suave de placa de Petri (desactivada en modo relajante intenso)
+    if (!CFG.relax || frame % 2 === 0) {
+      ctx.strokeStyle = 'rgba(46,204,113,0.04)';
+      ctx.lineWidth = 1;
+      const step = 60;
+      const ph = frame * 0.15;
+      for (let g = -step + (ph*step) % step; g < H; g += step) {
+        ctx.beginPath(); ctx.moveTo(0, g); ctx.lineTo(W, g); ctx.stroke();
+      }
+      for (let g = -step + (ph*step) % step; g < W; g += step) {
+        ctx.beginPath(); ctx.moveTo(g, 0); ctx.lineTo(g, H); ctx.stroke();
+      }
+    }
+
+    // comida
+    foods.forEach(f => {
       ctx.save();
-      ctx.translate(e.x, e.y);
-      ctx.rotate(e.angle);
-      ctx.shadowColor = '#ff3b3b'; ctx.shadowBlur = 16;
-      ctx.fillStyle = '#ff4d4d';
-      ctx.beginPath();
-      ctx.moveTo(0, -e.size * 0.9);
-      ctx.lineTo(e.size * 0.9, 0);
-      ctx.lineTo(0, e.size * 0.9);
-      ctx.lineTo(-e.size * 0.9, 0);
-      ctx.closePath();
-      ctx.fill();
+      ctx.translate(f.x, f.y);
+      const pulse = 1 + 0.25 * Math.sin(frame * 0.05 + f.age * 0.01);
+      ctx.globalAlpha = 0.85;
+      ctx.shadowColor = f.type === 'sun' ? '#a8e6cf' : '#ffd97b';
+      ctx.shadowBlur = f.type === 'sun' ? 14 : 10;
+      ctx.fillStyle = f.type === 'sun' ? '#a8e6cf' : '#ffd97b';
+      ctx.beginPath(); ctx.arc(0, 0, f.r * pulse, 0, Math.PI*2); ctx.fill();
       ctx.restore();
     });
 
-    // Stars
-    stars.forEach(s => {
-      const pulse = 0.75 + 0.25 * Math.sin(s.phase);
-      ctx.globalAlpha = pulse;
-      drawStarShape(s.x, s.y, s.r * pulse);
-      ctx.globalAlpha = 1;
+    // criaturas
+    creatures.forEach(c => {
+      ctx.save();
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.dir);
+      const alpha = c.justBorn > 0 ? 0.55 + 0.3 * Math.sin(frame * 0.2) : 1;
+      ctx.globalAlpha = alpha;
+      // cuerpo
+      ctx.shadowColor = c.color; ctx.shadowBlur = 12;
+      ctx.fillStyle = c.color;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, c.r, c.r * 0.72, 0, 0, Math.PI*2);
+      ctx.fill();
+      // ojo / sensor direccional
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.arc(c.r*0.55, 0, c.r*0.28, 0, Math.PI*2); ctx.fill();
+      // núcleo (ADN visible) pulsa con energía
+      const core = 0.55 + 0.15 * Math.sin(frame * 0.08 + c.age);
+      ctx.fillStyle = 'rgba(20,40,20,0.75)';
+      ctx.beginPath(); ctx.arc(0, 0, c.r * 0.32 * core, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+
+      // indicador de energía sobre la criatura
+      const e = clamp(c.energy / CFG.divideEnergy, 0, 1);
+      ctx.fillStyle = 'rgba(255,255,255,0.10)';
+      ctx.fillRect(c.x - c.r - 4, c.y - c.r - 9, (c.r*2 + 8), 5);
+      ctx.fillStyle = e > 0.8 ? '#2ecc71' : e > 0.4 ? '#f1c40f' : '#e74c3c';
+      ctx.fillRect(c.x - c.r - 4, c.y - c.r - 9, (c.r*2 + 8) * e, 5);
     });
 
-    // Player
-    ctx.save();
-    ctx.translate(player.x, player.y);
-    ctx.rotate(player.angle);
-    const flash = player.invincible > 0 && Math.floor(player.invincible / 60) % 2 === 0;
-    if (flash) ctx.globalAlpha = 0.45;
-    ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 18;
-    ctx.fillStyle = '#00ffff';
-    ctx.beginPath();
-    ctx.moveTo(0, -PLAYER_R * 1.3);
-    ctx.lineTo(PLAYER_R * 0.9, PLAYER_R * 0.7);
-    ctx.lineTo(0, PLAYER_R * 0.25);
-    ctx.lineTo(-PLAYER_R * 0.9, PLAYER_R * 0.7);
-    ctx.closePath();
-    ctx.fill();
-    // engine glow
-    ctx.fillStyle = '#61d4ff'; ctx.shadowBlur = 10;
-    ctx.beginPath(); ctx.arc(0, PLAYER_R * 0.55, PLAYER_R * 0.5, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
-
-    // Particles
+    // partículas
     particles.forEach(p => {
       ctx.globalAlpha = p.life;
       ctx.fillStyle = p.color;
       ctx.shadowBlur = 0;
-      ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+      ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
       ctx.globalAlpha = 1;
     });
 
-    // HUD decorative pulse on score already via DOM
+    // anillo de interacción bajo el puntero
+    if (state === 'PLAYING') {
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(pointer.x, pointer.y, 16, 0, Math.PI*2); ctx.stroke();
+    }
   }
 
-  // Handle visibility pause
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden && state === 'PLAYING') { /* keep running lightly */ }
+  // ================= HUD / Panel =================
+  function renderUI() {
+    elHud.innerHTML = `
+      <div class="stat"><span class="lbl">Células</span><span class="val">${creatures.length}</span></div>
+      <div class="stat"><span class="lbl">Nutrientes</span><span class="val">${foods.length}</span></div>
+      <div class="stat"><span class="lbl">G. media</span><span class="val">${stats.generations}</span></div>
+      <div class="stat"><span class="lbl">Especies</span><span class="val">${stats.species}</span></div>
+      <div class="stat"><span class="lbl">Mutaciones</span><span class="val">${stats.mutations}</span></div>
+      <div class="stat"><span class="lbl">Nacidos</span><span class="val">${stats.born}</span></div>
+      <div class="stat"><span class="lbl">Fallecidos</span><span class="val">${stats.dead}</span></div>
+    `;
+
+    const speedHtml = `<input type="range" min="0.2" max="3" step="0.1" value="${CFG.speed}" id="spd">`;
+    elPanel.innerHTML = `
+      <div class="row">
+        <label>Velocidad</label>${speedHtml}
+        <span class="chip ${CFG.relax ? '' : 'off'}" id="chipRelax">${CFG.relax ? 'Relajante ON' : 'Relajante OFF'}</span>
+        <button class="btn" id="btnPause">${paused ? 'Reanudar' : 'Pausar'}</button>
+      </div>
+      <div class="row" style="margin-top:6px">
+        <label>Comida auto</label>
+        <input type="range" min="0" max="0.6" step="0.02" value="${CFG.foodSpawn}" id="food">
+        <span class="chip">${creatures.length >= CFG.maxCreatures ? 'Población máx.' : 'Vivo'}</span>
+      </div>
+    `;
+
+    document.getElementById('spd').addEventListener('input', e => { CFG.speed = parseFloat(e.target.value); });
+    document.getElementById('food').addEventListener('input', e => { CFG.foodSpawn = parseFloat(e.target.value); });
+    document.getElementById('chipRelax').addEventListener('click', () => {
+      ensureAudio();
+      CFG.relax = !CFG.relax;
+      if (CFG.relax) startAmbient(); else stopAmbient();
+      sfx.click();
+      renderUI();
+    });
+    document.getElementById('btnPause').addEventListener('click', () => { ensureAudio(); togglePause(); sfx.click(); renderUI(); });
+  }
+
+  function loop(now) {
+    if (state === 'PLAYING') {
+      const dt = Math.min((now - lastTime) / 16.67, 3) * CFG.speed;
+      lastTime = now;
+      // actualizar varias veces según velocidad para suavizar
+      const steps = Math.max(1, Math.floor(dt));
+      for (let s = 0; s < steps; s++) update();
+      draw();
+      renderUI();
+      requestAnimationFrame(loop);
+    } else {
+      lastTime = now;
+      draw();
+      renderUI();
+      if (state !== 'MENU') requestAnimationFrame(loop);
+    }
+  }
+
+  // ================= Botones menú / overlay =================
+  document.getElementById('startBtn').addEventListener('click', e => { e.preventDefault(); ensureAudio(); sfx.click(); startSandbox(); });
+  document.getElementById('relaxBtn').addEventListener('click', e => { e.preventDefault(); ensureAudio(); CFG.relax = true; startAmbient(); sfx.click(); startSandbox(); });
+  document.getElementById('ovResume').addEventListener('click', e => { e.preventDefault(); ensureAudio(); togglePause(); sfx.click(); elOverlay.classList.add('hide'); });
+  document.getElementById('ovReset').addEventListener('click', e => { e.preventDefault(); ensureAudio(); resetWorld(); sfx.click(); elOverlay.classList.add('hide'); });
+
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { ensureAudio(); if (state === 'PLAYING') { paused = true; elOverlay.classList.remove('hide'); elOvTitle.textContent = 'Pausado'; elOvDesc.textContent = 'Observa el ecosistema. Pulsa Continuar para seguir.'; sfx.click(); } }
   });
+
+  // Inicio: mostrar menú
+  elMenu.classList.remove('hide');
+  elOverlay.classList.add('hide');
+  draw();
+  renderUI();
 
 })();
 </script>
