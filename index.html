@@ -3,57 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>All-in-One Box — Sandbox de Biología y Evolución</title>
+<title>All-in-One Box — Sandbox de Ciencia y Evolución</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden;
-    background: #060b10; color: #e8f4ea; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #0b0f14; color: #e8f4ea; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     touch-action: none; }
   #wrap { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  canvas { display: block; max-width: 100%; max-height: 100%; background: #04080b;
-    box-shadow: 0 0 50px rgba(46, 204, 113, 0.10); border-radius: 10px; }
+  canvas { display: block; max-width: 100%; max-height: 100%; background: #050709;
+    image-rendering: pixelated; border-radius: 8px;
+    box-shadow: 0 0 60px rgba(46,204,113,0.08); }
   .layer { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    pointer-events: none; z-index: 12; }
+    pointer-events: none; z-index: 14; }
   .layer > * { pointer-events: auto; }
-  h1 { margin: 0 0 10px; font-size: clamp(26px, 7vw, 48px); letter-spacing: 10px; text-transform: uppercase;
-    color: #2ecc71; text-shadow: 0 0 25px rgba(46,204,113,0.5), 0 0 70px rgba(46,204,113,0.2); }
-  p { margin: 0 0 20px; font-size: clamp(13px, 3.5vw, 17px); color: #bfe3cd; opacity: 0.9; text-align: center; line-height: 1.5; }
-  .btn { display: inline-block; padding: 11px 26px; font-size: clamp(14px, 3.5vw, 17px); font-weight: 800;
-    letter-spacing: 2px; text-transform: uppercase; color: #060b10; background: #2ecc71; border: none;
-    border-radius: 6px; cursor: pointer; box-shadow: 0 0 25px rgba(46,204,113,0.55); text-decoration: none;
+  h1 { margin: 0 0 8px; font-size: clamp(24px, 7vw, 44px); letter-spacing: 12px; text-transform: uppercase;
+    color: #2ecc71; text-shadow: 0 0 20px rgba(46,204,113,0.5), 0 0 60px rgba(46,204,113,0.2); }
+  p { margin: 0 0 18px; font-size: clamp(13px, 3.5vw, 16px); color: #bfe3cd; opacity: 0.9; text-align: center; line-height: 1.5; }
+  .btn { display: inline-block; padding: 10px 24px; font-size: clamp(13px, 3.5vw, 16px); font-weight: 800;
+    letter-spacing: 2px; text-transform: uppercase; color: #0b0f14; background: #2ecc71; border: none;
+    border-radius: 5px; cursor: pointer; box-shadow: 0 0 22px rgba(46,204,113,0.55); text-decoration: none;
     transition: transform .1s, filter .1s; }
   .btn:active { transform: scale(0.96); filter: brightness(1.15); }
-  .btn.secondary { background: rgba(255,255,255,0.10); color: #e8f4ea; box-shadow: none; border: 1px solid rgba(255,255,255,0.15); }
-  .hint { margin-top: 12px; font-size: clamp(12px, 3vw, 14px); color: #8fc1a3; opacity: 0.85; pointer-events: none; }
+  .btn.secondary { background: rgba(255,255,255,0.08); color: #e8f4ea; box-shadow: none; border: 1px solid rgba(255,255,255,0.12); }
+  .btn.small { padding: 6px 14px; font-size: 12px; }
   .hide { display: none !important; }
-  .overlay-bg { position: absolute; inset: 0; background: rgba(6,11,16,0.8); backdrop-filter: blur(6px); z-index: 11; pointer-events: none; }
+  .overlay-bg { position: absolute; inset: 0; background: rgba(11,15,20,0.85); backdrop-filter: blur(6px); z-index: 13; pointer-events: none; }
+  .hint { font-size: clamp(11px, 3vw, 13px); color: #8fc1a3; opacity: 0.8; pointer-events: none; margin-top: 8px; }
 
   /* HUD */
-  .hud { position: absolute; top: 12px; left: 0; right: 0; display: flex; gap: 10px; justify-content: center;
-    padding: 0 16px; pointer-events: none; z-index: 14; flex-wrap: wrap; }
-  .stat { display: flex; align-items: baseline; gap: 6px; font-size: clamp(13px, 3.5vw, 16px); font-weight: 800;
-    color: #d7efe2; background: rgba(255,255,255,0.06); padding: 6px 11px; border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(4px); letter-spacing: 0.4px; }
+  .hud { position: absolute; top: 10px; left: 0; right: 0; display: flex; gap: 8px; justify-content: center;
+    padding: 0 14px; pointer-events: none; z-index: 16; flex-wrap: wrap; }
+  .stat { display: flex; align-items: baseline; gap: 5px; font-size: clamp(12px, 3vw, 14px); font-weight: 800;
+    color: #d7efe2; background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 7px;
+    border: 1px solid rgba(255,255,255,0.07); backdrop-filter: blur(3px); letter-spacing: 0.3px; }
   .stat .val { color: #2ecc71; font-variant-numeric: tabular-nums; margin-left: 2px; }
-  .stat .lbl { font-size: 0.78em; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.8px; }
 
-  /* Panel de controles */
-  .panel { position: absolute; bottom: 16px; left: 0; right: 0; display: flex; justify-content: center; gap: 10px;
-    padding: 0 16px; pointer-events: none; z-index: 14; flex-wrap: wrap; }
+  /* Panel inferior */
+  .panel { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center;
+    gap: 8px; padding: 0 12px; pointer-events: none; z-index: 16; }
   .panel > * { pointer-events: auto; }
-  .row { display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 7px 11px;
-    border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(4px); }
-  .row label { font-size: 11px; color: #a8d5bd; text-transform: uppercase; letter-spacing: 0.8px; opacity: 0.9; }
-  .row input[type=range] { width: 110px; accent-color: #2ecc71; cursor: pointer; }
-  .row .btn { padding: 6px 14px; font-size: 13px; }
-  .chip { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px;
-    background: rgba(46,204,113,0.15); color: #2ecc71; border: 1px solid rgba(46,204,113,0.35); }
-  .chip.warn { background: rgba(241, 196, 15, 0.15); color: #f1c40f; border-color: rgba(241,196,15,0.35); }
-  .chip.off { background: rgba(231, 76, 60, 0.15); color: #e74c3c; border-color: rgba(231,76,60,0.35); }
+  .palette { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+    background: rgba(255,255,255,0.05); padding: 7px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(4px); max-width: 96vw; overflow-x: auto; }
+  .palette .cell { width: 30px; height: 30px; border-radius: 5px; border: 2px solid transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
+    transition: transform .1s, border-color .1s; }
+  .palette .cell:active { transform: scale(0.9); }
+  .palette .cell.active { border-color: #fff; box-shadow: 0 0 12px rgba(255,255,255,0.6); }
+  .palette .cell label { pointer-events: none; font-size: 9px; opacity: 0.8; }
 
-  .controls-tip { position: absolute; bottom: 74px; left: 0; right: 0; text-align: center; pointer-events: none;
-    font-size: clamp(12px, 3vw, 14px); color: #8fc1a3; opacity: 0.8; z-index: 13; }
-  @media (min-width: 768px) { .controls-tip { display: none; } }
+  .row { display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 11px;
+    border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(4px); flex-wrap: wrap; }
+  .row label { font-size: 10px; color: #a8d5bd; text-transform: uppercase; letter-spacing: 0.8px; opacity: 0.9; white-space: nowrap; }
+  .row input[type=range] { width: 100px; accent-color: #2ecc71; cursor: pointer; }
+  .row .btn { padding: 5px 12px; font-size: 12px; }
+  .chip { font-size: 10px; padding: 2px 8px; border-radius: 10px; background: rgba(46,204,113,0.15); color: #2ecc71;
+    border: 1px solid rgba(46,204,113,0.35); white-space: nowrap; }
+  .chip.off { background: rgba(231,76,60,0.15); color: #e74c3c; border-color: rgba(231,76,60,0.35); }
+
+  .tip { position: absolute; bottom: 84px; left: 0; right: 0; text-align: center; pointer-events: none;
+    font-size: clamp(11px, 3vw, 13px); color: #8fc1a3; opacity: 0.75; z-index: 15; }
+  @media (min-width: 768px) { .tip { display: none; } }
 </style>
 </head>
 <body>
@@ -64,24 +74,24 @@
 
   <div class="panel" id="panel"></div>
 
-  <div class="controls-tip" id="tip">Arrastra para crear comida • Toca el fondo para crear una célula</div>
+  <div class="tip" id="tip">Arrastra para pintar elementos • Toca una criatura para inspeccionarla</div>
 
   <div class="layer" id="menu">
     <div class="overlay-bg"></div>
     <div style="text-align:center">
       <h1>All-in-One Box</h1>
-      <p>Sandbox 2D de biología, evolución y ciencia. Observa cómo surgen especies, mutan y se adaptan. Modo relajante incluido.</p>
+      <p>Sandbox 2D pixel art de ciencia, biología y evolución. Crea materiales, observa la física y deja que la vida surja y evolucione.</p>
       <a class="btn" id="startBtn">Empezar sandbox</a>
       <a class="btn secondary" id="relaxBtn">Modo relajante</a>
-      <div class="hint">Toca la pantalla para interactuar • Arrastra para crear nutrientes</div>
+      <div class="hint">Toca para pintar • Arrastra para crear estelas</div>
     </div>
   </div>
 
   <div class="layer hide" id="overlay">
     <div class="overlay-bg"></div>
     <div style="text-align:center; max-width: 320px">
-      <h2 id="ovTitle" style="color:#2ecc71; margin-bottom:8px">Sandbox</h2>
-      <p id="ovDesc" style="margin-bottom:16px; font-size:14px"></p>
+      <h2 id="ovTitle" style="color:#2ecc71; margin-bottom:8px">Pausado</h2>
+      <p id="ovDesc" style="margin-bottom:16px; font-size:14px">Observa el ecosistema.</p>
       <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
         <a class="btn" id="ovResume">Continuar</a>
         <a class="btn secondary" id="ovReset">Reiniciar mundo</a>
@@ -92,12 +102,10 @@
 </div>
 <script>
 (function () {
-  // ================= Audio (Web Audio, gesto de usuario) =================
+  // ================= Audio =================
   let audioCtx;
   function ensureAudio() {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') audioCtx.resume();
   }
   function tone(freq, type, duration, vol = 0.05, when = 0) {
@@ -113,37 +121,542 @@
     o.start(t); o.stop(t + duration);
   }
   const sfx = {
-    birth:   () => tone(700, 'sine', 0.12, 0.04),
-    eat:     () => tone(1100, 'sine', 0.06, 0.03),
-    divide:  () => { tone(900, 'sine', 0.1, 0.04); tone(1200, 'sine', 0.1, 0.04, 0.06); },
-    mutate:  () => tone(1500, 'square', 0.1, 0.04),
-    die:     () => tone(260, 'sawtooth', 0.15, 0.04),
     click:   () => tone(1700, 'sine', 0.05, 0.02),
+    place:   () => tone(900, 'sine', 0.05, 0.02),
+    burn:    () => tone(400, 'sawtooth', 0.1, 0.03),
+    birth:   () => tone(800, 'sine', 0.1, 0.04),
+    die:     () => tone(240, 'sawtooth', 0.15, 0.04),
   };
-  // bucle ambiental relajante (solo si el modo relajante está activo)
   let ambient = null;
   function startAmbient() {
     if (!audioCtx) return;
     if (ambient) return;
-    const master = audioCtx.createGain(); master.gain.value = 0.03; master.connect(audioCtx.destination);
-    const osc1 = audioCtx.createOscillator(); osc1.type = 'sine'; osc1.frequency.value = 110;
-    const osc2 = audioCtx.createOscillator(); osc2.type = 'sine'; osc2.frequency.value = 147;
-    const lfo = audioCtx.createOscillator(); lfo.frequency.value = 0.05;
-    const lfoG = audioCtx.createGain(); lfoG.gain.value = 6;
-    lfo.connect(lfoG); lfoG.connect(osc1.detune); lfoG.connect(osc2.detune);
-    osc1.connect(master); osc2.connect(master);
-    osc1.start(); osc2.start(); lfo.start();
-    ambient = { master, osc1, osc2, lfo };
+    const master = audioCtx.createGain(); master.gain.value = 0.025; master.connect(audioCtx.destination);
+    const o1 = audioCtx.createOscillator(); o1.type = 'sine'; o1.frequency.value = 110;
+    const o2 = audioCtx.createOscillator(); o2.type = 'sine'; o2.frequency.value = 165;
+    const lfo = audioCtx.createOscillator(); lfo.frequency.value = 0.04;
+    const lg = audioCtx.createGain(); lg.gain.value = 5;
+    lfo.connect(lg); lg.connect(o1.detune); lg.connect(o2.detune);
+    o1.connect(master); o2.connect(master);
+    o1.start(); o2.start(); lfo.start();
+    ambient = { o1, o2, lfo };
   }
   function stopAmbient() {
-    if (ambient) { try { ambient.osc1.stop(); ambient.osc2.stop(); ambient.lfo.stop(); } catch(e) {}
+    if (ambient) { try { ambient.o1.stop(); ambient.o2.stop(); ambient.lfo.stop(); } catch(e) {}
       ambient = null; }
   }
 
-  // ================= Config / estado =================
+  // ================= Config / grid =================
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d', { alpha: false });
   const W = canvas.width, H = canvas.height;
+  const CELL = 10;
+  const GW = Math.floor(W / CELL), GH = Math.floor(H / CELL);
+
+  const T = {
+    VOID: 0, STONE: 1, SAND: 2, WATER: 3, FIRE: 4, SMOKE: 5, PLANT: 6, STEAM: 7, ACID: 8, LAVA: 9
+  };
+  const ELEMS = [
+    { id: T.VOID,   name: 'Vacío',   color: '#050709' },
+    { id: T.STONE,  name: 'Piedra',  color: '#7f8c8d' },
+    { id: T.SAND,   name: 'Arena',   color: '#f1c40f' },
+    { id: T.WATER,  name: 'Agua',    color: '#3498db' },
+    { id: T.FIRE,   name: 'Fuego',   color: '#e74c3c' },
+    { id: T.SMOKE,  name: 'Humo',    color: '#95a5a6' },
+    { id: T.PLANT,  name: 'Planta',  color: '#2ecc71' },
+    { id: T.STEAM,  name: 'Vapor',   color: '#85c1e9' },
+    { id: T.ACID,   name: 'Ácido',   color: '#2ecc71' }, // verde neón por estilo
+    { id: T.LAVA,   name: 'Lava',    color: '#c0392b' },
+  ];
+
+  const CFG = {
+    speed: 1.0,
+    relax: false,
+    brush: 1,
+    selected: T.SAND,
+    paused: false,
+  };
+
+  let state = 'MENU';
+  let frame = 0, lastTime = 0;
+
+  // grid plano: cada celda {t, life, age}
+  const grid = new Uint8Array(GW * GH); // tipo
+  const life = new Uint16Array(GW * GH); // vida/edad
+  const age  = new Uint16Array(GW * GH); // edad para crecimiento
+
+  function idx(gx, gy) { return gy * GW + gx; }
+  function inb(gx, gy) { return gx >= 0 && gx < GW && gy >= 0 && gy < GH; }
+  function getT(gx, gy) { return inb(gx, gy) ? grid[idx(gx, gy)] : T.VOID; }
+  function setT(gx, gy, t) { if (inb(gx, gy)) { grid[idx(gx, gy)] = t; life[idx(gx, gy)] = 0; age[idx(gx, gy)] = 0; } }
+
+  // estadísticas educativas
+  const stats = { cells: 0, creatures: 0, plants: 0, born: 0, dead: 0, burned: 0, generations: 0, species: 0 };
+  const speciesColors = {};
+  function speciesColor(id) {
+    if (!speciesColors[id]) {
+      const h = (id * 137.508) % 360;
+      speciesColors[id] = `hsl(${h}, 70%, 60%)`;
+    }
+    return speciesColors[id];
+  }
+
+  // ================= Criaturas (biología sobre el grid) =================
+  const creatures = [];
+  function randomDna() {
+    return {
+      speed: 0.6 + Math.random() * 1.4,
+      size: 0.5 + Math.random() * 1.2,
+      sense: 0.6 + Math.random() * 1.4,
+      diet: Math.random() < 0.5 ? 'plant' : 'any',
+      speciesId: Math.floor(Math.random() * 1e6),
+      generation: 1,
+    };
+  }
+  function mutateDna(d) {
+    const k = ['speed','size','sense'][Math.floor(Math.random() * 3)];
+    d[k] *= (1 + (Math.random() - 0.5) * 0.4);
+    d[k] = Math.max(0.3, Math.min(2.5, d[k]));
+    if (Math.random() < 0.3) d.diet = d.diet === 'plant' ? 'any' : 'plant';
+    d.speciesId = Math.floor(Math.random() * 1e6);
+    d.generation = (d.generation || 1) + 1;
+  }
+  function spawnCreature(x, y, dna) {
+    if (creatures.length >= 120) return null;
+    const d = dna ? { ...dna } : randomDna();
+    if (dna && Math.random() < 0.12) { mutateDna(d); sfx.birth(); }
+    creatures.push({
+      x, y, vx: 0, vy: 0, dir: Math.random() * Math.PI * 2,
+      r: 4 + d.size * 4,
+      energy: 40, age: 0, dna,
+      color: speciesColor(d.speciesId),
+      generation: d.generation || 1,
+      justBorn: 12,
+    });
+    stats.born++;
+    stats.creatures = creatures.length;
+    return creatures[creatures.length - 1];
+  }
+  for (let i = 0; i < 5; i++) spawnCreature(Math.random() * W, Math.random() * H, randomDna());
+
+  // ================= Partículas =================
+  const particles = [];
+  function explode(x, y, color, count, spd = 2) {
+    for (let i = 0; i < count; i++) {
+      const a = Math.random() * Math.PI * 2, s = Math.random() * spd;
+      particles.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s,
+        life: 0.3 + Math.random() * 0.4, color, size: 1.5 + Math.random() * 2 });
+    }
+  }
+
+  // ================= Input =================
+  const pointer = { x: -1e4, y: -1e4, down: false, brush: 1 };
+  canvas.addEventListener('pointerdown', e => {
+    ensureAudio();
+    if (state !== 'PLAYING') { if (state === 'MENU') { sfx.click(); startSandbox(); } return; }
+    pointer.down = true;
+    paintAt(e);
+    sfx.place();
+  }, { passive: false });
+  canvas.addEventListener('pointermove', e => {
+    const r = canvas.getBoundingClientRect();
+    const sx = W / r.width, sy = H / r.height;
+    pointer.x = (e.clientX - r.left) * sx;
+    pointer.y = (e.clientY - r.top) * sy;
+    if (state === 'PLAYING' && pointer.down && frame % 2 === 0) { paintAt(e); sfx.place(); }
+  }, { passive: false });
+  canvas.addEventListener('pointerup', () => pointer.down = false);
+  canvas.addEventListener('pointerleave', () => pointer.down = false);
+
+  function paintAt(e) {
+    const r = canvas.getBoundingClientRect();
+    const sx = W / r.width, sy = H / r.height;
+    const cx = (e.clientX - r.left) * sx, cy = (e.clientY - r.top) * sy;
+    const gx = Math.floor(cx / CELL), gy = Math.floor(cy / CELL);
+    const b = CFG.brush;
+    for (let dy = -b; dy <= b; dy++) for (let dx = -b; dx <= b; dx++) {
+      if (Math.random() < 0.85) setT(gx + dx, gy + dy, CFG.selected);
+    }
+  }
+  // crear criatura al tocar sobre una planta (doble intención simple: largo toque no disponible; usamos tecla)
+  window.addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if (k === ' ') { e.preventDefault(); ensureAudio(); togglePause(); sfx.click(); }
+    if (k === 'r') { ensureAudio(); resetWorld(); sfx.click(); }
+    if (k === 'c') { ensureAudio(); spawnCreature(pointer.x > -1e3 ? pointer.x : W * 0.5, pointer.y > -1e3 ? pointer.y : H * 0.5, randomDna()); sfx.click(); }
+    if (k === 'm') { ensureAudio(); CFG.relax = !CFG.relax; if (CFG.relax) startAmbient(); else stopAmbient(); sfx.click(); renderUI(); }
+    // teclas numéricas para elemento rápido
+    const n = parseInt(k, 10);
+    if (!isNaN(n) && n >= 1 && n <= ELEMS.length) { CFG.selected = ELEMS[n - 1].id; renderUI(); sfx.click(); }
+  });
+
+  function togglePause() { CFG.paused = !CFG.paused; }
+  function startSandbox() {
+    state = 'PLAYING'; CFG.paused = false; frame = 0; lastTime = performance.now();
+    grid.fill(T.VOID); life.fill(0); age.fill(0);
+    creatures.length = 0;
+    for (let i = 0; i < 5; i++) spawnCreature(Math.random() * W, Math.random() * H, randomDna());
+    // suelo de piedra y algo de agua/arena
+    for (let gx = 0; gx < GW; gx++) setT(gx, GH - 1, T.STONE);
+    for (let i = 0; i < 60; i++) setT(Math.random() * GW, Math.floor(GH * 0.7) + Math.random() * 10, T.SAND);
+    for (let i = 0; i < 25; i++) setT(Math.random() * GW, Math.floor(GH * 0.65), T.WATER);
+    for (let i = 0; i < 15; i++) setT(Math.random() * GW, Math.floor(GH * 0.6), T.PLANT);
+    elMenu.classList.add('hide');
+    elOverlay.classList.add('hide');
+    if (CFG.relax) startAmbient();
+    requestAnimationFrame(loop);
+  }
+  function resetWorld() {
+    grid.fill(T.VOID); life.fill(0); age.fill(0);
+    creatures.length = 0;
+    for (let i = 0; i < 5; i++) spawnCreature(Math.random() * W, Math.random() * H, randomDna());
+    for (let gx = 0; gx < GW; gx++) setT(gx, GH - 1, T.STONE);
+    CFG.paused = false;
+    elOverlay.classList.add('hide');
+  }
+
+  // ================= Simulación del grid (autómata celular) =================
+  function updateGrid() {
+    // procesar de abajo hacia arriba para materiales que caen
+    const next = new Uint8Array(grid);
+    const nextLife = new Uint16Array(life);
+    const nextAge = new Uint16Array(age);
+
+    // envejecer todo
+    for (let i = 0; i < grid.length; i++) {
+      if (grid[i] !== T.VOID) { nextAge[i] = age[i] + 1; if (age[i] > 60000) nextAge[i] = 0; }
+    }
+
+    // fuego
+    for (let gy = 0; gy < GH; gy++) {
+      for (let gx = 0; gx < GW; gx++) {
+        const t = grid[idx(gx, gy)];
+        if (t === T.FIRE) {
+          nextLife[idx(gx, gy)] = life[idx(gx, gy)] + 1;
+          if (life[idx(gx, gy)] > 40 || Math.random() < 0.15) { next[idx(gx, gy)] = T.SMOKE; nextLife[idx(gx, gy)] = 0; stats.burned++; }
+          // propagar
+          for (let d = 0; d < 4; d++) {
+            const nx = gx + (d === 0 ? 1 : d === 1 ? -1 : 0), ny = gy + (d === 2 ? 1 : d === 3 ? -1 : 0);
+            if (inb(nx, ny)) {
+              const nt = grid[idx(nx, ny)];
+              if (nt === T.PLANT || nt === T.WOOD_TMP || nt === T.SAND) { /* sand no arde */ }
+              if (nt === T.PLANT && Math.random() < 0.35) { next[idx(nx, ny)] = T.FIRE; nextLife[idx(nx, ny)] = 0; stats.burned++; explode((nx+0.5)*CELL,(ny+0.5)*CELL,'#ffd97b',3,1.5); }
+              if (nt === T.ACID && Math.random() < 0.2) { next[idx(nx, ny)] = T.VOID; }
+            }
+          }
+          // apagar con agua
+          for (let d = 0; d < 4; d++) {
+            const nx = gx + (d === 0 ? 1 : d === 1 ? -1 : 0), ny = gy + (d === 2 ? 1 : d === 3 ? -1 : 0);
+            if (inb(nx, ny) && grid[idx(nx, ny)] === T.WATER) { next[idx(gx, gy)] = T.STEAM; nextLife[idx(gx, gy)] = 0; break; }
+          }
+        }
+      }
+    }
+
+    // arena (cae)
+    for (let gy = GH - 2; gy >= 0; gy--) {
+      for (let gx = 0; gx < GW; gx++) {
+        if (grid[idx(gx, gy)] === T.SAND) {
+          const below = getT(gx, gy + 1);
+          if (below === T.VOID) { next[idx(gx, gy)] = T.VOID; next[idx(gx, gy + 1)] = T.SAND; }
+          else if (below === T.WATER && Math.random() < 0.5) { next[idx(gx, gy)] = T.VOID; next[idx(gx, gy + 1)] = T.SAND; next[idx(gx, gy)] = T.VOID; }
+          else {
+            const dir = Math.random() < 0.5 ? -1 : 1;
+            const dl = getT(gx + dir, gy + 1);
+            if (dl === T.VOID) { next[idx(gx, gy)] = T.VOID; next[idx(gx + dir, gy + 1)] = T.SAND; }
+            else {
+              const dr = getT(gx - dir, gy + 1);
+              if (dr === T.VOID) { next[idx(gx, gy)] = T.VOID; next[idx(gx - dir, gy + 1)] = T.SAND; }
+            }
+          }
+        }
+      }
+    }
+
+    // agua (cae y fluye)
+    for (let gy = GH - 2; gy >= 0; gy--) {
+      for (let gx = 0; gx < GW; gx++) {
+        if (grid[idx(gx, gy)] === T.WATER) {
+          const below = getT(gx, gy + 1);
+          if (below === T.VOID) { next[idx(gx, gy)] = T.VOID; next[idx(gx, gy + 1)] = T.WATER; }
+          else if (below === T.FIRE) { next[idx(gx, gy)] = T.VOID; next[idx(gx, gy + 1)] = T.STEAM; nextLife[idx(gx, gy + 1)] = 0; }
+          else {
+            const dir = Math.random() < 0.5 ? -1 : 1;
+            const l = getT(gx + dir, gy);
+            const r = getT(gx - dir, gy);
+            if (l === T.VOID) { next[idx(gx, gy)] = T.VOID; next[idx(gx + dir, gy)] = T.WATER; }
+            else if (r === T.VOID) { next[idx(gx, gy)] = T.VOID; next[idx(gx - dir, gy)] = T.WATER; }
+          }
+        }
+      }
+    }
+
+    // humo y vapor suben
+    for (let gy = 1; gy < GH; gy++) {
+      for (let gx = 0; gx < GW; gx++) {
+        const t = grid[idx(gx, gy)];
+        if (t === T.SMOKE || t === T.STEAM) {
+          const above = getT(gx, gy - 1);
+          if (above === T.VOID) { next[idx(gx, gy)] = T.VOID; next[idx(gx, gy - 1)] = t; }
+          else {
+            const dir = Math.random() < 0.5 ? -1 : 1;
+            const l = getT(gx + dir, gy);
+            const r = getT(gx - dir, gy);
+            if (l === T.VOID) { next[idx(gx, gy)] = T.VOID; next[idx(gx + dir, gy)] = t; }
+            else if (r === T.VOID) { next[idx(gx, gy)] = T.VOID; next[idx(gx - dir, gy)] = t; }
+          }
+          if (t === T.SMOKE && Math.random() < 0.02) next[idx(gx, gy)] = T.VOID;
+        }
+      }
+    }
+
+    // planta crece lentamente y se propaga
+    for (let gy = 0; gy < GH; gy++) {
+      for (let gx = 0; gx < GW; gx++) {
+        if (grid[idx(gx, gy)] === T.PLANT) {
+          nextAge[idx(gx, gy)] = (nextAge[idx(gx, gy)] || 0) + 1;
+          if (nextAge[idx(gx, gy)] > 200) {
+            nextAge[idx(gx, gy)] = 0;
+            // necesita agua cerca para crecer/prosperar
+            let waterNear = false;
+            for (let d = 0; d < 4; d++) {
+              const nx = gx + (d === 0 ? 1 : d === 1 ? -1 : 0), ny = gy + (d === 2 ? 1 : d === 3 ? -1 : 0);
+              if (inb(nx, ny) && grid[idx(nx, ny)] === T.WATER) { waterNear = true; break; }
+            }
+            if (waterNear || Math.random() < 0.05) {
+              const dir = Math.random() < 0.5 ? -1 : 1;
+              const nx = gx + dir, ny = gy;
+              if (inb(nx, ny) && grid[idx(nx, ny)] === T.VOID && Math.random() < 0.15) {
+                next[idx(nx, ny)] = T.PLANT; nextAge[idx(nx, ny)] = 0; stats.plants++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // ácido corroe piedra/arena
+    for (let gy = 0; gy < GH; gy++) {
+      for (let gx = 0; gx < GW; gx++) {
+        if (grid[idx(gx, gy)] === T.ACID) {
+          nextLife[idx(gx, gy)] = life[idx(gx, gy)] + 1;
+          if (life[idx(gx, gy)] > 120) next[idx(gx, gy)] = T.VOID;
+          for (let d = 0; d < 4; d++) {
+            const nx = gx + (d === 0 ? 1 : d === 1 ? -1 : 0), ny = gy + (d === 2 ? 1 : d === 3 ? -1 : 0);
+            if (inb(nx, ny) && Math.random() < 0.03) {
+              const nt = grid[idx(nx, ny)];
+              if (nt === T.STONE || nt === T.SAND) next[idx(nx, ny)] = T.VOID;
+            }
+          }
+        }
+      }
+    }
+
+    // lava quema y funde
+    for (let gy = GH - 2; gy >= 0; gy--) {
+      for (let gx = 0; gx < GW; gx++) {
+        if (grid[idx(gx, gy)] === T.LAVA) {
+          nextLife[idx(gx, gy)] = life[idx(gx, gy)] + 1;
+          if (life[idx(gx, gy)] > 80) next[idx(gx, gy)] = T.STONE;
+          for (let d = 0; d < 4; d++) {
+            const nx = gx + (d === 0 ? 1 : d === 1 ? -1 : 0), ny = gy + (d === 2 ? 1 : d === 3 ? -1 : 0);
+            if (inb(nx, ny)) {
+              const nt = grid[idx(nx, ny)];
+              if (nt === T.PLANT || nt === T.SAND) { next[idx(nx, ny)] = T.FIRE; nextLife[idx(nx, ny)] = 0; stats.burned++; }
+              if (nt === T.WATER) { next[idx(nx, ny)] = T.STONE; next[idx(gx, gy)] = T.STONE; }
+            }
+          }
+          if (getT(gx, gy + 1) === T.WATER) { next[idx(gx, gy)] = T.STONE; }
+        }
+      }
+    }
+
+    // convertir grids (sólo aplicar cambios donde difieran)
+    for (let i = 0; i < grid.length; i++) {
+      if (next[i] !== grid[i] || nextLife[i] !== life[i]) {
+        grid[i] = next[i]; life[i] = nextLife[i]; age[i] = nextAge[i];
+      }
+    }
+  }
+
+  // ================= Criaturas update =================
+  function updateCreatures() {
+    let sumSpd = 0, sumSize = 0, sumSense = 0;
+    const speciesSet = new Set();
+    stats.plants = 0; stats.cells = 0;
+    for (let gy = 0; gy < GH; gy++) for (let gx = 0; gx < GW; gx++) {
+      const t = grid[idx(gx, gy)];
+      stats.cells++;
+      if (t === T.PLANT) stats.plants++;
+    }
+
+    for (let i = creatures.length - 1; i >= 0; i--) {
+      const c = creatures[i];
+      c.age++;
+      c.justBorn = Math.max(0, c.justBorn - 1);
+      speciesSet.add(c.dna.speciesId);
+
+      const gx = Math.floor(c.x / CELL), gy = Math.floor(c.y / CELL);
+      // metabolismo
+      c.energy -= (0.05 + c.dna.speed * 0.05 + c.dna.size * 0.03) * CFG.speed;
+
+      // buscar comida (planta o agua)
+      let tx = c.x, ty = c.y, found = false, bestD = 1e9;
+      const sense = 40 + c.dna.sense * 35;
+      for (let gy2 = gy - 4; gy2 <= gy + 4; gy2++) {
+        for (let gx2 = gx - 4; gx2 <= gx + 4; gx2++) {
+          if (!inb(gx2, gy2)) continue;
+          const t = grid[idx(gx2, gy2)];
+          const ok = (c.dna.diet === 'plant' ? t === T.PLANT : t === T.PLANT || t === T.WATER);
+          if (ok) {
+            const cx2 = gx2 * CELL + CELL / 2, cy2 = gy2 * CELL + CELL / 2;
+            const d = Math.hypot(cx2 - c.x, cy2 - c.y);
+            if (d < sense && d < bestD) { bestD = d; tx = cx2; ty = cy2; found = true; }
+          }
+        }
+      }
+      if (found) {
+        const ang = Math.atan2(ty - c.y, tx - c.x);
+        c.dir = ang + (Math.random() - 0.5) * 0.4;
+      } else {
+        c.dir += (Math.random() - 0.5) * 0.15;
+      }
+      const spd = c.dna.speed * 1.1 * CFG.speed;
+      c.vx = Math.cos(c.dir) * spd;
+      c.vy = Math.sin(c.dir) * spd;
+      c.x += c.vx; c.y += c.vy;
+
+      // bordes
+      if (c.x < c.r) { c.x = c.r; c.dir = Math.PI - c.dir; }
+      if (c.x > W - c.r) { c.x = W - c.r; c.dir = Math.PI - c.dir; }
+      if (c.y < c.r) { c.y = c.r; c.dir = -c.dir; }
+      if (c.y > H - c.r) { c.y = H - c.r; c.dir = -c.dir; }
+
+      // comer planta/beber agua bajo la criatura
+      const ct = getT(gx, gy);
+      if (ct === T.PLANT) {
+        setT(gx, gy, T.VOID);
+        c.energy += 25;
+        stats.eaten = (stats.eaten || 0) + 1;
+        explode(c.x, c.y, '#2ecc71', 4, 1.5);
+      } else if (ct === T.WATER && c.dna.diet === 'any') {
+        setT(gx, gy, T.VOID);
+        c.energy += 12;
+        explode(c.x, c.y, '#3498db', 3, 1.2);
+      }
+
+      // reproducirse
+      if (c.energy >= 85 && c.age > 100 && creatures.length < 120) {
+        c.energy /= 2;
+        const child = spawnCreature(c.x + (Math.random() - 0.5) * 20, c.y + (Math.random() - 0.5) * 20, { ...c.dna });
+        if (child) stats.generations = Math.max(stats.generations, child.generation);
+      }
+
+      if (c.energy <= 0) {
+        explode(c.x, c.y, c.color, 6, 2);
+        sfx.die();
+        creatures.splice(i, 1);
+        stats.dead++;
+        continue;
+      }
+
+      sumSpd += c.dna.speed; sumSize += c.dna.size; sumSense += c.dna.sense;
+    }
+    const n = creatures.length;
+    stats.creatures = n;
+    stats.species = speciesSet.size;
+    if (n) {
+      stats.avgSpeed = sumSpd / n; stats.avgSize = sumSize / n; stats.avgSense = sumSense / n;
+    }
+  }
+
+  // ================= Partículas update =================
+  function updateParticles() {
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx; p.y += p.vy;
+      p.life -= 0.03 * CFG.speed;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+  }
+
+  // ================= Dibujo =================
+  function drawGrid() {
+    for (let gy = 0; gy < GH; gy++) {
+      const oy = gy * CELL;
+      for (let gx = 0; gx < GW; gx++) {
+        const t = grid[idx(gx, gy)];
+        if (t === T.VOID) continue;
+        const e = ELEMS.find(x => x.id === t);
+        const ox = gx * CELL;
+        ctx.fillStyle = e.color;
+        // brillo para fuego/lava/planta
+        if (t === T.FIRE || t === T.LAVA) { ctx.shadowColor = e.color; ctx.shadowBlur = 8; }
+        else if (t === T.PLANT) { ctx.shadowColor = '#2ecc71'; ctx.shadowBlur = 6; }
+        else { ctx.shadowBlur = 0; }
+        ctx.fillRect(ox, oy, CELL, CELL);
+        // variación píxel (ruido sutil para agua/arena)
+        if (t === T.WATER || t === T.SAND) {
+          const noise = (Math.sin(frame * 0.1 + gx) * Math.cos(frame * 0.08 + gy)) * 0.5 + 0.5;
+          ctx.globalAlpha = 0.7 + noise * 0.2;
+          ctx.fillRect(ox + 1, oy + 1, CELL - 2, CELL - 2);
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+    ctx.shadowBlur = 0;
+  }
+
+  function drawCreatures() {
+    creatures.forEach(c => {
+      ctx.save();
+      ctx.translate(c.x, c.y);
+      ctx.rotate(c.dir);
+      const alpha = c.justBorn > 0 ? 0.5 + 0.3 * Math.sin(frame * 0.2) : 1;
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = c.color;
+      ctx.shadowColor = c.color; ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, c.r, c.r * 0.65, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // ojo
+      ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.arc(c.r * 0.55, 0, c.r * 0.3, 0, Math.PI * 2); ctx.fill();
+      // núcleo
+      ctx.fillStyle = 'rgba(20,30,20,0.8)';
+      ctx.beginPath(); ctx.arc(0, 0, c.r * 0.3, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+      // barra energía
+      const e = Math.max(0, Math.min(1, c.energy / 85));
+      ctx.fillStyle = 'rgba(255,255,255,0.12)';
+      ctx.fillRect(c.x - c.r - 3, c.y - c.r - 7, c.r * 2 + 6, 4);
+      ctx.fillStyle = e > 0.6 ? '#2ecc71' : e > 0.3 ? '#f1c40f' : '#e74c3c';
+      ctx.fillRect(c.x - c.r - 3, c.y - c.r - 7, (c.r * 2 + 6) * e, 4);
+    });
+    ctx.shadowBlur = 0;
+  }
+
+  function drawParticles() {
+    particles.forEach(p => {
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+      ctx.globalAlpha = 1;
+    });
+  }
+
+  function drawPointer() {
+    if (state !== 'PLAYING') return;
+    ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(pointer.x, pointer.y, CFG.brush * CELL + 2, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = ELEMS.find(x => x.id === CFG.selected).color;
+    ctx.globalAlpha = 0.45;
+    ctx.beginPath(); ctx.arc(pointer.x, pointer.y, CFG.brush * CELL + 2, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  // ================= UI =================
   const elHud = document.getElementById('hud');
   const elPanel = document.getElementById('panel');
   const elTip = document.getElementById('tip');
@@ -152,449 +665,67 @@
   const elOvTitle = document.getElementById('ovTitle');
   const elOvDesc = document.getElementById('ovDesc');
 
-  // Ajustes del sandbox (ajustables por el usuario)
-  const CFG = {
-    foodSpawn: 0.12,        // probabilidad de comida por frame base
-    maxFood: 220,
-    maxCreatures: 220,
-    baseEnergy: 60,
-    mutateChance: 0.08,
-    mutateAmount: 0.14,
-    divideEnergy: 110,
-    relax: false,
-    speed: 1.0,
-  };
-
-  let state = 'MENU'; // MENU | PLAYING | PAUSED
-  let paused = false;
-  let frame = 0;
-  let lastTime = 0;
-
-  let foods = [];     // {x,y,r,energy,type}
-  let creatures = []; // criaturas
-  let particles = []; // {x,y,vx,vy,life,color,size}
-
-  // estadísticas educativas
-  let stats = {
-    born: 0, dead: 0, eaten: 0, divisions: 0, mutations: 0,
-    generations: 0, avgSpeed: 0, avgSize: 0, avgSense: 0,
-    species: 0,
-  };
-
-  // paleta de especies (colores por id de especie)
-  const speciesColors = {};
-
-  // ================= Utilidades =================
-  function rand(min, max) { return Math.random() * (max - min) + min; }
-  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-  function dist2(a, b) { const dx = a.x - b.x, dy = a.y - b.y; return dx*dx + dy*dy; }
-
-  function getSpeciesColor(id) {
-    if (speciesColors[id]) return speciesColors[id];
-    const h = (id * 137.508) % 360; // ángulo áureo -> colores distribuidos
-    speciesColors[id] = `hsl(${h}, 70%, 62%)`;
-    return speciesColors[id];
-  }
-
-  // ================= Entidades =================
-  function spawnFood(x, y, forced) {
-    if (foods.length >= CFG.maxFood && !forced) return;
-    const r = 3 + Math.random() * 4;
-    const energy = 8 + Math.random() * 12;
-    const type = Math.random() < 0.12 ? 'sun' : 'food'; // 'sun' = fotosíntesis (verde brillante)
-    foods.push({ x, y, r, energy, type, age: 0 });
-  }
-
-  function spawnCreature(x, y, dna, fromDivision) {
-    if (creatures.length >= CFG.maxCreatures) return null;
-    const d = dna || randomDna();
-    // herencia con mutación
-    if (dna && Math.random() < CFG.mutateChance) {
-      mutateDna(d);
-      stats.mutations++;
-      sfx.mutate();
-    }
-    const c = {
-      x, y,
-      vx: (Math.random() - 0.5) * 2,
-      vy: (Math.random() - 0.5) * 2,
-      r: 6 + d.size * 10,
-      energy: CFG.baseEnergy,
-      age: 0,
-      dna,
-      speciesId: dna.speciesId,
-      color: getSpeciesColor(dna.speciesId),
-      dir: Math.random() * Math.PI * 2,
-      turnSpeed: 0.03 + d.sense * 0.04,
-      lastDivide: 0,
-      generation: dna.generation || 1,
-      justBorn: 20, // frames de invulnerabilidad visual
-    };
-    creatures.push(c);
-    stats.born++;
-    if (fromDivision) stats.divisions++;
-    sfx.birth();
-    return c;
-  }
-
-  function randomDna() {
-    // ADN: velocidad, tamaño, sentido, eficiencia energética, tipo de dieta, color-hue offset, generación
-    return {
-      speed: rand(0.8, 2.2),
-      size: rand(0.5, 1.4),
-      sense: rand(0.6, 1.6),      // radio de detección de comida
-      eff: rand(0.7, 1.3),        // eficiencia al convertir comida en energía
-      diet: Math.random() < 0.25 ? 'sun' : 'food', // 'sun' prefiere fotosíntesis, 'food' come materia orgánica
-      speciesId: Math.floor(rand(1, 1e6)),
-      generation: 1,
-    };
-  }
-
-  function mutateDna(d) {
-    const keys = ['speed','size','sense','eff'];
-    const k = keys[Math.floor(Math.random() * keys.length)];
-    d[k] *= (1 + rand(-CFG.mutateAmount, CFG.mutateAmount));
-    d[k] = clamp(d[k], 0.25, 2.5);
-    if (Math.random() < 0.3) d.diet = d.diet === 'food' ? 'sun' : 'food';
-    d.speciesId = Math.floor(rand(1, 1e6)); // nueva especie tras mutación fuerte
-    d.generation = (d.generation || 1) + 1;
-  }
-
-  // ================= Física / interacción =================
-  let pointer = { x: -1e4, y: -1e4, down: false };
-  canvas.addEventListener('pointerdown', e => {
-    ensureAudio();
-    if (state !== 'PLAYING') { if (state === 'MENU') { sfx.click(); startSandbox(); } return; }
-    pointer.down = true;
-    const r = canvas.getBoundingClientRect();
-    const sx = W / r.width, sy = H / r.height;
-    pointer.x = (e.clientX - r.left) * sx;
-    pointer.y = (e.clientY - r.top) * sy;
-    // crear comida bajo el dedo (arrastre continuo se maneja en pointermove)
-    spawnFood(pointer.x, pointer.y, true);
-    sfx.click();
-  }, { passive: false });
-  canvas.addEventListener('pointermove', e => {
-    const r = canvas.getBoundingClientRect();
-    const sx = W / r.width, sy = H / r.height;
-    pointer.x = (e.clientX - r.left) * sx;
-    pointer.y = (e.clientY - r.top) * sy;
-    if (state === 'PLAYING' && pointer.down) {
-      // dejar estela de comida al arrastrar
-      if (frame % 3 === 0) spawnFood(pointer.x, pointer.y, true);
-    }
-  }, { passive: false });
-  canvas.addEventListener('pointerup', () => pointer.down = false);
-  canvas.addEventListener('pointerleave', () => pointer.down = false);
-
-  // clic en fondo vacío crea célula (usando pointerdown ya lo hace si no hay comida; añadimos doble-intención)
-  // teclado
-  window.addEventListener('keydown', e => {
-    const k = e.key.toLowerCase();
-    if (k === ' ') { e.preventDefault(); ensureAudio(); togglePause(); sfx.click(); }
-    if (k === 'r') { ensureAudio(); resetWorld(); sfx.click(); }
-    if (k === '1') { ensureAudio(); for (let i = 0; i < 8; i++) spawnFood(rand(0, W), rand(0, H), true); }
-    if (k === '2') { ensureAudio(); spawnCreature(rand(40, W-40), rand(40, H-40), randomDna(), false); }
-    if (k === 'm') { ensureAudio(); CFG.relax = !CFG.relax; if (CFG.relax) startAmbient(); else stopAmbient(); sfx.click(); }
-  });
-
-  function togglePause() { paused = !paused; }
-  function startSandbox() {
-    state = 'PLAYING'; paused = false; frame = 0; lastTime = performance.now();
-    foods = []; creatures = []; particles = [];
-    stats = { born:0, dead:0, eaten:0, divisions:0, mutations:0, generations:0, avgSpeed:0, avgSize:0, avgSense:0, species:0 };
-    speciesColors = {};
-    for (let i = 0; i < 6; i++) spawnCreature(rand(60, W-60), rand(60, H-60), randomDna(), false);
-    for (let i = 0; i < 40; i++) spawnFood(rand(0, W), rand(0, H), true);
-    elMenu.classList.add('hide');
-    elOverlay.classList.add('hide');
-    if (CFG.relax) { ensureAudio(); startAmbient(); }
-    requestAnimationFrame(loop);
-  }
-  function resetWorld() {
-    foods = []; creatures = []; particles = [];
-    stats = { born:0, dead:0, eaten:0, divisions:0, mutations:0, generations:0, avgSpeed:0, avgSize:0, avgSense:0, species:0 };
-    speciesColors = {};
-    for (let i = 0; i < 6; i++) spawnCreature(rand(60, W-60), rand(60, H-60), randomDna(), false);
-    for (let i = 0; i < 40; i++) spawnFood(rand(0, W), rand(0, H), true);
-    paused = false;
-    elOverlay.classList.add('hide');
-  }
-
-  // ================= Partículas =================
-  function explode(x, y, color, count, speed = 2.5) {
-    for (let i = 0; i < count; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const s = Math.random() * speed;
-      particles.push({ x, y, vx: Math.cos(a)*s, vy: Math.sin(a)*s,
-        life: 0.35 + Math.random()*0.4, color, size: 1.5 + Math.random()*2.5 });
-    }
-  }
-
-  // ================= Lógica principal =================
-  function update() {
-    if (paused) return;
-
-    // spawn pasivo de comida (nutrientes del entorno)
-    if (CFG.foodSpawn > 0 && foods.length < CFG.maxFood && Math.random() < CFG.foodSpawn * CFG.speed) {
-      spawnFood(rand(0, W), rand(0, H), false);
-    }
-    // 'sun' aparece ocasionalmente (fuente de energía fotosintética)
-    if (foods.length < CFG.maxFood && Math.random() < 0.006 * CFG.speed) {
-      spawnFood(rand(0, W), rand(0, H), true);
-      foods[foods.length-1].type = 'sun';
-      foods[foods.length-1].r = 6;
-      foods[foods.length-1].energy = 20;
-    }
-
-    // --- Comida envejece y desaparece ---
-    for (let i = foods.length - 1; i >= 0; i--) {
-      const f = foods[i];
-      f.age++;
-      if (f.age > 1400) { foods.splice(i, 1); continue; }
-    }
-
-    // --- Criaturas ---
-    let sumSpeed = 0, sumSize = 0, sumSense = 0;
-    const speciesSet = new Set();
-
-    for (let i = creatures.length - 1; i >= 0; i--) {
-      const c = creatures[i];
-      c.age++;
-      c.lastDivide++;
-      c.justBorn = Math.max(0, c.justBorn - 1);
-      speciesSet.add(c.speciesId);
-
-      // gasto de energía por existir (metabolismo)
-      const metabolism = 0.06 + c.dna.speed * 0.05 + c.dna.size * 0.04;
-      c.energy -= metabolism * CFG.speed;
-
-      // movimiento: dirección aleatoria suave + giro hacia comida cercana
-      const target = findNearestFood(c);
-      if (target) {
-        const dx = target.x - c.x, dy = target.y - c.y;
-        const ang = Math.atan2(dy, dx);
-        let diff = ang - c.dir;
-        while (diff > Math.PI) diff -= Math.PI*2;
-        while (diff < -Math.PI) diff += Math.PI*2;
-        c.dir += diff * (c.dna.sense * 0.05) * CFG.speed;
-      } else {
-        c.dir += (Math.random() - 0.5) * c.turnSpeed * CFG.speed;
-      }
-      const spd = c.dna.speed * 1.4 * CFG.speed;
-      c.vx = Math.cos(c.dir) * spd;
-      c.vy = Math.sin(c.dir) * spd;
-      c.x += c.vx; c.y += c.vy;
-
-      // rebote en bordes
-      if (c.x < c.r) { c.x = c.r; c.dir = Math.PI - c.dir; }
-      if (c.x > W - c.r) { c.x = W - c.r; c.dir = Math.PI - c.dir; }
-      if (c.y < c.r) { c.y = c.r; c.dir = -c.dir; }
-      if (c.y > H - c.r) { c.y = H - c.r; c.dir = -c.dir; }
-
-      // comer comida cercana
-      for (let j = foods.length - 1; j >= 0; j--) {
-        const f = foods[j];
-        const dd = dist2(c, f);
-        const min = (c.r + f.r) * (c.r + f.r);
-        if (dd < min) {
-          // dieta: 'sun' solo gana energía completa de 'sun', 'food' prefiere 'food' pero come ambas
-          let gain = f.energy * c.dna.eff;
-          if (c.dna.diet === 'sun' && f.type !== 'sun') gain *= 0.45;
-          if (c.dna.diet === 'food' && f.type === 'sun') gain *= 0.7;
-          c.energy += gain;
-          stats.eaten++;
-          sfx.eat();
-          explode(f.x, f.y, c.dna.diet === 'sun' ? '#a8e6cf' : '#ffd97b', 4, 1.5);
-          foods.splice(j, 1);
-          break;
-        }
-      }
-
-      // división / reproducción asexuada
-      if (c.energy >= CFG.divideEnergy && c.lastDivide > 180 && creatures.length < CFG.maxCreatures) {
-        c.energy /= 2;
-        c.lastDivide = 0;
-        const child = spawnCreature(c.x + rand(-c.r, c.r), c.y + rand(-c.r, c.r), { ...c.dna, generation: c.dna.generation + 1 }, true);
-        stats.generations = Math.max(stats.generations, child.generation);
-      }
-
-      // muerte por energía
-      if (c.energy <= 0) {
-        explode(c.x, c.y, c.color, 8, 2.5);
-        sfx.die();
-        creatures.splice(i, 1);
-        stats.dead++;
-        continue;
-      }
-
-      sumSpeed += c.dna.speed;
-      sumSize += c.dna.size;
-      sumSense += c.dna.sense;
-    }
-
-    // agregados de estadísticas
-    const n = creatures.length;
-    stats.avgSpeed = n ? sumSpeed / n : 0;
-    stats.avgSize = n ? sumSize / n : 0;
-    stats.avgSense = n ? sumSense / n : 0;
-    stats.species = speciesSet.size;
-
-    // --- Partículas ---
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.x += p.vx; p.y += p.vy;
-      p.life -= 0.025 * CFG.speed;
-      if (p.life <= 0) particles.splice(i, 1);
-    }
-
-    frame++;
-  }
-
-  function findNearestFood(c) {
-    let best = null, bestD = Infinity;
-    const sense = 90 + c.dna.sense * 70;
-    const sense2 = sense * sense;
-    for (const f of foods) {
-      // preferencia por dieta
-      let pref = 1;
-      if (c.dna.diet === 'sun' && f.type !== 'sun') pref = 0.5;
-      if (c.dna.diet === 'food' && f.type === 'sun') pref = 0.8;
-      const dd = dist2(c, f) * pref;
-      if (dd < sense2 && dd < bestD) { bestD = dd; best = f; }
-    }
-    return best;
-  }
-
-  // ================= Dibujo =================
-  function draw() {
-    // fondo tipo agua / placa de Petri con degradado sutil
-    const grad = ctx.createRadialGradient(W*0.5, H*0.3, 0, W*0.5, H*0.5, Math.max(W,H)*0.9);
-    grad.addColorStop(0, '#0a161b');
-    grad.addColorStop(1, '#04080a');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, W, H);
-
-    // rejilla suave de placa de Petri (desactivada en modo relajante intenso)
-    if (!CFG.relax || frame % 2 === 0) {
-      ctx.strokeStyle = 'rgba(46,204,113,0.04)';
-      ctx.lineWidth = 1;
-      const step = 60;
-      const ph = frame * 0.15;
-      for (let g = -step + (ph*step) % step; g < H; g += step) {
-        ctx.beginPath(); ctx.moveTo(0, g); ctx.lineTo(W, g); ctx.stroke();
-      }
-      for (let g = -step + (ph*step) % step; g < W; g += step) {
-        ctx.beginPath(); ctx.moveTo(g, 0); ctx.lineTo(g, H); ctx.stroke();
-      }
-    }
-
-    // comida
-    foods.forEach(f => {
-      ctx.save();
-      ctx.translate(f.x, f.y);
-      const pulse = 1 + 0.25 * Math.sin(frame * 0.05 + f.age * 0.01);
-      ctx.globalAlpha = 0.85;
-      ctx.shadowColor = f.type === 'sun' ? '#a8e6cf' : '#ffd97b';
-      ctx.shadowBlur = f.type === 'sun' ? 14 : 10;
-      ctx.fillStyle = f.type === 'sun' ? '#a8e6cf' : '#ffd97b';
-      ctx.beginPath(); ctx.arc(0, 0, f.r * pulse, 0, Math.PI*2); ctx.fill();
-      ctx.restore();
+  function renderPalette() {
+    let html = '';
+    ELEMS.forEach(e => {
+      if (e.id === T.VOID) return;
+      const active = CFG.selected === e.id ? 'active' : '';
+      html += `<div class="cell ${active}" style="background:${e.color}" title="${e.name}" data-id="${e.id}">${e.name[0]}</div>`;
     });
-
-    // criaturas
-    creatures.forEach(c => {
-      ctx.save();
-      ctx.translate(c.x, c.y);
-      ctx.rotate(c.dir);
-      const alpha = c.justBorn > 0 ? 0.55 + 0.3 * Math.sin(frame * 0.2) : 1;
-      ctx.globalAlpha = alpha;
-      // cuerpo
-      ctx.shadowColor = c.color; ctx.shadowBlur = 12;
-      ctx.fillStyle = c.color;
-      ctx.beginPath();
-      ctx.ellipse(0, 0, c.r, c.r * 0.72, 0, 0, Math.PI*2);
-      ctx.fill();
-      // ojo / sensor direccional
-      ctx.fillStyle = 'rgba(255,255,255,0.85)';
-      ctx.shadowBlur = 0;
-      ctx.beginPath(); ctx.arc(c.r*0.55, 0, c.r*0.28, 0, Math.PI*2); ctx.fill();
-      // núcleo (ADN visible) pulsa con energía
-      const core = 0.55 + 0.15 * Math.sin(frame * 0.08 + c.age);
-      ctx.fillStyle = 'rgba(20,40,20,0.75)';
-      ctx.beginPath(); ctx.arc(0, 0, c.r * 0.32 * core, 0, Math.PI*2); ctx.fill();
-      ctx.restore();
-
-      // indicador de energía sobre la criatura
-      const e = clamp(c.energy / CFG.divideEnergy, 0, 1);
-      ctx.fillStyle = 'rgba(255,255,255,0.10)';
-      ctx.fillRect(c.x - c.r - 4, c.y - c.r - 9, (c.r*2 + 8), 5);
-      ctx.fillStyle = e > 0.8 ? '#2ecc71' : e > 0.4 ? '#f1c40f' : '#e74c3c';
-      ctx.fillRect(c.x - c.r - 4, c.y - c.r - 9, (c.r*2 + 8) * e, 5);
-    });
-
-    // partículas
-    particles.forEach(p => {
-      ctx.globalAlpha = p.life;
-      ctx.fillStyle = p.color;
-      ctx.shadowBlur = 0;
-      ctx.fillRect(p.x - p.size/2, p.y - p.size/2, p.size, p.size);
-      ctx.globalAlpha = 1;
-    });
-
-    // anillo de interacción bajo el puntero
-    if (state === 'PLAYING') {
-      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
-      ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(pointer.x, pointer.y, 16, 0, Math.PI*2); ctx.stroke();
-    }
-  }
-
-  // ================= HUD / Panel =================
-  function renderUI() {
-    elHud.innerHTML = `
-      <div class="stat"><span class="lbl">Células</span><span class="val">${creatures.length}</span></div>
-      <div class="stat"><span class="lbl">Nutrientes</span><span class="val">${foods.length}</span></div>
-      <div class="stat"><span class="lbl">G. media</span><span class="val">${stats.generations}</span></div>
-      <div class="stat"><span class="lbl">Especies</span><span class="val">${stats.species}</span></div>
-      <div class="stat"><span class="lbl">Mutaciones</span><span class="val">${stats.mutations}</span></div>
-      <div class="stat"><span class="lbl">Nacidos</span><span class="val">${stats.born}</span></div>
-      <div class="stat"><span class="lbl">Fallecidos</span><span class="val">${stats.dead}</span></div>
-    `;
-
-    const speedHtml = `<input type="range" min="0.2" max="3" step="0.1" value="${CFG.speed}" id="spd">`;
-    elPanel.innerHTML = `
+    elPanel.innerHTML = `<div class="palette">${html}</div>`;
+    // controles
+    elPanel.innerHTML += `
       <div class="row">
-        <label>Velocidad</label>${speedHtml}
+        <label>Velocidad</label>
+        <input type="range" min="0.2" max="3" step="0.1" value="${CFG.speed}" id="spd">
         <span class="chip ${CFG.relax ? '' : 'off'}" id="chipRelax">${CFG.relax ? 'Relajante ON' : 'Relajante OFF'}</span>
-        <button class="btn" id="btnPause">${paused ? 'Reanudar' : 'Pausar'}</button>
+        <button class="btn small" id="btnPause">${CFG.paused ? 'Reanudar' : 'Pausar'}</button>
+        <button class="btn small" id="btnClear">Limpiar</button>
       </div>
       <div class="row" style="margin-top:6px">
-        <label>Comida auto</label>
-        <input type="range" min="0" max="0.6" step="0.02" value="${CFG.foodSpawn}" id="food">
-        <span class="chip">${creatures.length >= CFG.maxCreatures ? 'Población máx.' : 'Vivo'}</span>
+        <label>Pincel</label>
+        <input type="range" min="1" max="4" step="1" value="${CFG.brush}" id="brush">
       </div>
     `;
-
-    document.getElementById('spd').addEventListener('input', e => { CFG.speed = parseFloat(e.target.value); });
-    document.getElementById('food').addEventListener('input', e => { CFG.foodSpawn = parseFloat(e.target.value); });
-    document.getElementById('chipRelax').addEventListener('click', () => {
-      ensureAudio();
-      CFG.relax = !CFG.relax;
-      if (CFG.relax) startAmbient(); else stopAmbient();
-      sfx.click();
-      renderUI();
+    elPanel.querySelectorAll('.palette .cell').forEach(cell => {
+      cell.addEventListener('click', () => { CFG.selected = parseInt(cell.dataset.id, 10); CFG.brush = 1; renderPalette(); renderUI(); sfx.click(); });
     });
-    document.getElementById('btnPause').addEventListener('click', () => { ensureAudio(); togglePause(); sfx.click(); renderUI(); });
+    document.getElementById('spd').addEventListener('input', e => { CFG.speed = parseFloat(e.target.value); });
+    document.getElementById('brush').addEventListener('input', e => { CFG.brush = parseInt(e.target.value, 10); });
+    document.getElementById('chipRelax').addEventListener('click', () => { ensureAudio(); CFG.relax = !CFG.relax; if (CFG.relax) startAmbient(); else stopAmbient(); sfx.click(); renderPalette(); renderUI(); });
+    document.getElementById('btnPause').addEventListener('click', () => { ensureAudio(); togglePause(); sfx.click(); renderPalette(); renderUI(); });
+    document.getElementById('btnClear').addEventListener('click', () => { ensureAudio(); grid.fill(T.VOID); life.fill(0); age.fill(0); creatures.length = 0; particles.length = 0; sfx.click(); });
   }
 
+  function renderUI() {
+    renderPalette();
+    elHud.innerHTML = `
+      <div class="stat"><span class="lbl">Mundo</span><span class="val">${stats.cells}</span></div>
+      <div class="stat"><span class="lbl">Criaturas</span><span class="val">${stats.creatures}</span></div>
+      <div class="stat"><span class="lbl">Plantas</span><span class="val">${stats.plants}</span></div>
+      <div class="stat"><span class="lbl">Especies</span><span class="val">${stats.species}</span></div>
+      <div class="stat"><span class="lbl">Generación</span><span class="val">${stats.generations}</span></div>
+      <div class="stat"><span class="lbl">Nacidas</span><span class="val">${stats.born}</span></div>
+      <div class="stat"><span class="lbl">Fallecidas</span><span class="val">${stats.dead}</span></div>
+      <div class="stat"><span class="lbl">Quemadas</span><span class="val">${stats.burned}</span></div>
+    `;
+    elTip.textContent = `Elemento: ${ELEMS.find(x => x.id === CFG.selected)?.name} • 1-9 rápido • C: criatura • M: relajante`;
+  }
+
+  // ================= Bucle =================
   function loop(now) {
     if (state === 'PLAYING') {
       const dt = Math.min((now - lastTime) / 16.67, 3) * CFG.speed;
       lastTime = now;
-      // actualizar varias veces según velocidad para suavizar
       const steps = Math.max(1, Math.floor(dt));
-      for (let s = 0; s < steps; s++) update();
+      for (let s = 0; s < steps; s++) {
+        if (!CFG.paused) {
+          updateGrid();
+          updateCreatures();
+          updateParticles();
+          frame++;
+        }
+      }
       draw();
       renderUI();
       requestAnimationFrame(loop);
@@ -606,22 +737,30 @@
     }
   }
 
-  // ================= Botones menú / overlay =================
+  function draw() {
+    ctx.fillStyle = '#050709';
+    ctx.fillRect(0, 0, W, H);
+    drawGrid();
+    drawParticles();
+    drawCreatures();
+    drawPointer();
+  }
+
+  // ================= Menú / overlay =================
   document.getElementById('startBtn').addEventListener('click', e => { e.preventDefault(); ensureAudio(); sfx.click(); startSandbox(); });
   document.getElementById('relaxBtn').addEventListener('click', e => { e.preventDefault(); ensureAudio(); CFG.relax = true; startAmbient(); sfx.click(); startSandbox(); });
   document.getElementById('ovResume').addEventListener('click', e => { e.preventDefault(); ensureAudio(); togglePause(); sfx.click(); elOverlay.classList.add('hide'); });
   document.getElementById('ovReset').addEventListener('click', e => { e.preventDefault(); ensureAudio(); resetWorld(); sfx.click(); elOverlay.classList.add('hide'); });
 
   window.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { ensureAudio(); if (state === 'PLAYING') { paused = true; elOverlay.classList.remove('hide'); elOvTitle.textContent = 'Pausado'; elOvDesc.textContent = 'Observa el ecosistema. Pulsa Continuar para seguir.'; sfx.click(); } }
+    if (e.key === 'Escape') { ensureAudio(); if (state === 'PLAYING') { CFG.paused = true; elOverlay.classList.remove('hide'); elOvTitle.textContent = 'Pausado'; elOvDesc.textContent = 'Mundo en pausa. Pulsa Continuar para seguir.'; sfx.click(); } }
   });
 
-  // Inicio: mostrar menú
+  // inicio
   elMenu.classList.remove('hide');
   elOverlay.classList.add('hide');
   draw();
   renderUI();
-
 })();
 </script>
 </body>
